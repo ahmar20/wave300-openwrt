@@ -7,18 +7,8 @@
 #ifndef PCI_CONFIG_REGISTERS
 #define PCI_CONFIG_REGISTERS
 
-#define VendorID         0x0
-#define DeviceID         0x2
-#define CommandReg       0x4
-#define StatusReg        0x6
-#define RevisionID       0x8
-#define ClassCode        0x9
-#define CacheLine        0xc
-#define LatencyTimer     0xd
-#define HeaderType       0xe
-#define BIST             0xf
 
-
+// WAVE300 Vendor Specific Registers
 
 
 
