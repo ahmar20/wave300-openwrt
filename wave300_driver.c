@@ -8,6 +8,7 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <asm/irq.h>
+#include <linux/dma-mapping.h>
 #include <pci_vendor_registers.h>
 
 
@@ -80,6 +81,7 @@
 static int wave300_driver_init(void)
 {
 	int err;
+	int consistent_dma;
 	int mwi_enable;
 	LOG("WAVE300 Module initializing...\n");
 	err = pci_register_driver(&pci_driver_wave300);
@@ -95,7 +97,7 @@ static int wave300_driver_init(void)
 			LOG("Memory-Write-Invalidate not possible for WAVE300.\n");
 		}
 		
-		err = pci_request_region(pci_dev_wave300, wave300_bar, wave300_resource_name);
+		err = pci_request_regions(pci_dev_wave300, wave300_resource_name);
 		if (err < 0)
 		{ 
 			LOG("Failed to acquire memory regions for WAVE300.\n");
@@ -115,9 +117,23 @@ static int wave300_driver_init(void)
 				LOG("32bit DMA mask failed.\n");
 				return err;
 			}
+			else
+			{
+				consistent_dma = pci_set_consistent_dma_mask(pci_dev_wave300, DMA_32BIT_MASK);
+				if (consistent_dma < 0)
+				{
+					LOG("Consistent DMA Mask(32) not set.");
+				}
+				LOG("32bit mask set for WAVE300.\n");
+			}
 		}
 		else
 		{
+			consistent_dma = pci_set_consistent_dma_mask(pci_dev_wave300, DMA_64BIT_MASK);
+			if (consistent_dma < 0)
+			{
+				LOG("Consistent DMA Mask(64) not set.");
+			}
 			LOG("64bit mask set for WAVE300.\n");
 		}
 		// clear any pending interrupts here before registering interrupt handler
@@ -168,7 +184,7 @@ static void device_remove(struct pci_dev *dev)
 	pci_clear_master(dev);
 	
 	pci_disable_device(dev);
-	pci_release_region(dev, wave300_bar);
+	pci_release_regions(dev);
 }
 
 static void show_device_info(struct pci_dev *dev)
