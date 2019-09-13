@@ -2,7 +2,6 @@
 .wave300_driver.mod.o.cmd
 .wave300_driver.o.cmd
 Module.symvers
-wave300_driver.ko
 wave300_driver.mod.c
 wave300_driver.mod.o
 wave300_driver.o
