@@ -75,7 +75,6 @@
 		//suspend: device_suspend,
 	};
 	const char *wave300_resource_name = "wave300_memory_resources";
-	static int irq;
 	const char *interrupt_name = "wave300";
 	unsigned int *BAR_0_mem;
 	unsigned int *BAR_1_mem;
@@ -119,48 +118,32 @@ static int device_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	err = reserve_memory_wave300(dev);
 	if (err < 0) return err;
 
-	err = pci_set_dma_mask(dev, DMA_64BIT_MASK);
 	if (err < 0)
 	{
-		LOG("64bit DMA mask failed.\n");
-		err = pci_set_dma_mask(dev, DMA_32BIT_MASK);
-		if (err < 0)
-		{
-			LOG("32bit DMA mask failed.\n");
-			return err;
-		}
-		else
-		{
-			consistent_dma = pci_set_consistent_dma_mask(dev, DMA_32BIT_MASK);
-			if (consistent_dma < 0)
-			{
-				LOG("Consistent DMA Mask(32) not set.");
-			}
-			LOG("32bit mask set for WAVE300.\n");
-		}
-	}
-	else
-	{
-		consistent_dma = pci_set_consistent_dma_mask(dev, DMA_64BIT_MASK);
-		if (consistent_dma < 0)
-		{
-			LOG("Consistent DMA Mask(64) not set.");
-		}
-		LOG("64bit mask set for WAVE300.\n");
-	}
-
-	// clear any pending interrupts here before registering interrupt handler
-	irq = dev->irq;
-	enable_irq(irq);
-	err = request_irq(irq, &wave300_interrupt_handler, IRQF_SHARED, interrupt_name, &dev_info);
-	if (err < 0)
-	{ 
-		LOG("IRQ registration failed with error code: %d\n", err);
+		LOG("32bit DMA mask failed.\n");
 		return err;
 	}
 	else
 	{
-		LOG("IRQ registered for WAVE300.\n");
+		consistent_dma = pci_set_consistent_dma_mask(dev, DMA_32BIT_MASK);
+		if (consistent_dma < 0)
+		{
+			LOG("Consistent DMA Mask(32) not set.");
+		}
+		LOG("32bit mask set for WAVE300.\n");
+	}
+
+	// To-Do -- clear any pending interrupts here before registering interrupt handler
+	enable_irq(dev->irq);
+	err = request_irq(dev->irq, &wave300_interrupt_handler, IRQF_SHARED, interrupt_name, &dev_info);
+	if (err < 0)
+	{ 
+		LOG("IRQ %d registration failed with error code: %d\n", dev->irq, err);
+		return err;
+	}
+	else
+	{
+		LOG("IRQ %d registered for WAVE300.\n", dev->irq);
 	}
 	pci_dev_wave300 = dev;
 	return err;
@@ -171,8 +154,8 @@ static void device_remove(struct pci_dev *dev)
 	iounmap(BAR_0_mem);
 	iounmap(BAR_1_mem);
 
-	disable_irq(irq);
-	free_irq(irq, &dev_info);
+	disable_irq(dev->irq);
+	free_irq(dev->irq, &dev_info);
 	pci_clear_mwi(dev);
 	pci_clear_master(dev);
 	
@@ -182,7 +165,7 @@ static void device_remove(struct pci_dev *dev)
 
 static void show_device_info(struct pci_dev *dev)
 {
-	LOG("Device has been identified as: \nVendor(%x), Device(%x), Class(%x), \nPower-State(%x),\
+	LOG("Device has been identified as: \nVendor(0x%x), Device(0x%x), Class(0x%x), \nPower-State(%x),\
 	PM-Capability-Offset(%x), \nD1-Support(%x), D2-Support(%x), \nClear-Retrain-Link(%x),\
 	D3-D0-Transition-Time(%x), \nConfiguration-Space-Size(0x%x), IRQ(0x%x).\n",
 	dev->vendor, dev->device, dev->class, dev->current_state, dev->pm_cap, dev->d1_support,
@@ -191,7 +174,7 @@ static void show_device_info(struct pci_dev *dev)
 
 static irqreturn_t wave300_interrupt_handler(int irq, void *dev_Id)
 {
-	LOG("IRQ %x may be handled here!\n", irq);
+	LOG("IRQ %d may be handled here!\n", irq);
 
 	return IRQ_HANDLED;
 }
@@ -216,7 +199,7 @@ static int reserve_memory_wave300(struct pci_dev *dev)
 		pci_enable_msi(dev);
 	}
 	// determine how to distinguish between PCI and PCIe
-	if (true) // check if the device is PCI or PCIe - true for PCI
+	if (dev->device == WAVE300_Device_Id) // check if the device is PCI or PCIe - true for PCI
 	{
 		BAR_0_mem = ioremap(pci_resource_start(dev, PCI_Memory_Block_0), pci_resource_len(dev, PCI_Memory_Block_0));
 		LOG("PCI Memory block %i: PA: 0x%p, VA: 0x%p, Len=0x%x\n", PCI_Memory_Block_0,
