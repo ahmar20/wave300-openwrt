@@ -47,7 +47,7 @@ Use this driver only if you absolutely know what you are doing. A misuse can lea
 You are using the driver at your own risk! It is your responsibility to doublecheck the correct country setting before every use. You should also, probably, limit TX power not to cause any interference.
 
 
-## RFlib:
+## RF Library (rflib)
 The rflib library seems to be distributed separated from the driver itself. The driver can either statically link the distributed `mtlk_rflib.a` library or just use copied rflib sources. The kernel modules from multiple routers use version 3.4 of the driver licensed under GPL, but the source codes for v3.4 rflib are yet to be found. Even worse, the distributed `mtlk_rflib.a` is precompiled for non WAVE300 devices. For these reasons we need to backport the rflib sources from version 3.5 (sort of an obsoleted dead branch of development).\
 The WAVE300 is not officially supported in v3.5 (and after WAVE300 devices have 5.x branch), but the support is still not removed. The sane assumption is the rflib part didn't change too much. I've disassembled the archive files from v3.4 and compared few percents of the code with v3.5 and it confirms it.
 
@@ -55,7 +55,7 @@ The v3.5 rflib source code `lq-wave-300-03.05.00.00.53.a2676e338c1e.rflib.wls.sr
 
 As suggested in the openwrt forum, the updates are being distributed in a separate repo (currently through Google drive).
 
-## Installation:
+## Compilation and Installation
 Obtain `wave300_rflib` sources from the external repo and copy them into the driver (from one top source directory to other top source directory).\
 Set your compiled openwrt root in the file `support/ugw.env.common` with variable `DEFAULT_TOOLCHAIN_PATH`. The driver requires libnl-3 library (not libnl-tiny).\
 The ./Makefile in the root is a special file. It starts the build (not the ./configure).
