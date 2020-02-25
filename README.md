@@ -53,7 +53,7 @@ You are using the driver at your own risk! It is your responsibility to doublech
 The rflib library seems to be distributed separated from the driver itself. The driver can either statically link the distributed `mtlk_rflib.a` library or just use copied rflib sources. The kernel modules from multiple routers use version 3.4 of the driver licensed under GPL, but the source codes for v3.4 rflib are yet to be found. Even worse, the distributed `mtlk_rflib.a` is precompiled for non WAVE300 devices. For these reasons we need to backport the rflib sources from version 3.5 (sort of an obsoleted dead branch of development).\
 The WAVE300 is not officially supported in v3.5 (and after WAVE300 devices have 5.x branch), but the support is still not removed. The sane assumption is the rflib part didn't change too much. I've disassembled the archive files from v3.4 and compared few percents of the code with v3.5 and it confirms it.
 
-The v3.5 rflib source code `lq-wave-300-03.05.00.00.53.a2676e338c1e.rflib.wls.src.tar.bz2` can be obtained from: [Google Drive](https://drive.google.com/file/d/1Bozk1Cc8fB-FMgkxegyaSIBxru08bwJv/view).
+The v3.5 rflib source code `lq-wave-300-03.05.00.00.53.a2676e338c1e.rflib.wls.src.tar.bz2` can be obtained from [this](https://repo.or.cz/wave300_rflib.git) repo and all the complete source can be obtained from: [Google Drive](https://drive.google.com/file/d/1Bozk1Cc8fB-FMgkxegyaSIBxru08bwJv/view) (1Gb size).
 
 As suggested in the openwrt forum, the updates are being distributed in a separate repo (currently through Google drive).
 
