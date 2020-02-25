@@ -82,15 +82,15 @@ It seems -j flag for make doesn't make much (almost no parallelization possible,
 Resulting files are in `./builds/ugw5.4-vrx288/binaries/wls/driver`. Copy them into the standard place in `/lib/modules`. Copy the firmware files into `/lib/firmware`.
 
 Insert the modules with the following commands:\
-`insmod mtlkroot.ko`
+`insmod mtlkroot.ko`\
 `insmod mtlk.ko ap=1`
 
-Use iwpriv for setting TX power (there is a list).
+Use `iwpriv` for setting TX power (there is a list).
 Set your own country: `iwpriv wlan0 sCountry XXX`\
 The global settings, not sure if the driver supports this interface:
 
-`iw reg set XXX`
-`iwconfig wlan0 essid test`
+`iw reg set XXX`\
+`iwconfig wlan0 essid test`\
 `ifconfig wlan0 10.0.0.42 netmask 255.255.255.0 up`
 
 If the driver still didn't crash, do iperf/iperf3 test.
