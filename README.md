@@ -8,6 +8,8 @@ Initially driver was being ported by [Vittorio Alfieri](https://forum.openwrt.or
 The WAVE300 WiFi driver seems to be obsoleted and no longer developed. This causes problems for anyone trying to use it in the current OpenWrt environment as driver API gets old and incompatible with newer kernel versions. This repo is trying to fix the original driver and keep it updated.\
 The WAVE300 is a 802.11 abgn PCI(e) (depends on PHY version and chip sub-type). The controller originates from Metalink (that's why mtlk.ko), developed by Lantiq and nowadays owned by Intel.
 
+This driver has been tested without security (WPA/WPA2) and working for OpenWrt v18.06.5 and the host system was Ubuntu.
+
 More information is available in following links:\
 [Hardware Info @OpenWrt](https://openwrt.org/docs/techref/hardware/soc/soc.lantiq#wave300)\
 [Hardware Info @WikiDevi](https://wikidevi.com/wiki/Lantiq#WAVE300)\
@@ -56,20 +58,28 @@ The v3.5 rflib source code `lq-wave-300-03.05.00.00.53.a2676e338c1e.rflib.wls.sr
 As suggested in the openwrt forum, the updates are being distributed in a separate repo (currently through Google drive).
 
 ## Compilation and Installation
-Obtain `wave300_rflib` sources from the external repo and copy them into the driver (from one top source directory to other top source directory).\
-Set your compiled openwrt root in the file `support/ugw.env.common` with variable `DEFAULT_TOOLCHAIN_PATH`. The driver requires libnl-3 library (not libnl-tiny).\
+You will need to have a working OpenWrt source for this step. If you don't have it yet then first compile it.\
+You will need to set some Kernel options for debugging because the driver seems to crash if those are not enabled.
+
+Run `make menuconfig` in your OpenWrt source directory and navigate to:\
+Global Build Settings -> Kernel Build Options\
+Select "Compile the kernel with symbol table information" and also "Compile the kernel with debug information" to enable them\
+Set any other options within the menu if you are compiling for the first time, also install `libnl` package if not installed before.
+For more information refer to [OpenWrt Build System Guide](https://openwrt.org/docs/guide-developer/build-system/start).
+
+Clone this repo and obtain `wave300_rflib` sources from the above (Google drive) repo and copy them into the driver (from one top source directory to other top source directory).\
+Set your compiled OpenWrt root in the file `./support/ugw.env.common` with variable `DEFAULT_TOOLCHAIN_PATH`. The driver requires libnl-3 library (not libnl-tiny).\
 The ./Makefile in the root is a special file. It starts the build (not the ./configure).
 
 Do NOT run ./configure. It will delete ./Makefile, mess the build system and you will lose Kconfig support.
 
-Some combinations of missing files may be undefined. You can delete all build-oriented files by:
-`make distclean`\
-The default options should create the working driver. Other options may cause kernel crashes or gcc refuses to compile them (patches are welcome): `make menuconfig`
-`make`
+Some combinations of missing files may be undefined. You can delete all build-oriented files by: `make distclean`\
+The default options should create the working driver. Other options may cause kernel crashes or gcc refuses to compile them (patches are welcome): `make menuconfig`\
+Execute `make` to start building the driver.
 
 It seems -j flag for make doesn't make much (almost no parallelization possible, too much dependencies). For every file some perl script is started (I think it is generating "SLID" debug info).
 
-Resulting files are in `builds/ugw5.4-vrx288/binaries/wls/driver`. Copy them into the standard place in `/lib/modules`. Copy the firmware files into `/lib/firmware`.
+Resulting files are in `./builds/ugw5.4-vrx288/binaries/wls/driver`. Copy them into the standard place in `/lib/modules`. Copy the firmware files into `/lib/firmware`.
 
 Insert the modules with the following commands:\
 `insmod mtlkroot.ko`
