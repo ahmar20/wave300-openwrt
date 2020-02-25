@@ -30,7 +30,7 @@ The last two are loaded when the interface is enabled. The name decoding is base
 
 ProgModel_BG_nCB_wave300.bin         - PHY firmware (?)\
 ProgModel_BG_nCB_3D_RevB_wave300.bin - HW firmware (?)\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|\
+| &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; |\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ - - HW revision\
           |   |   +------- HW type, 0x3D seems to be the newest (but one cal_wlan0 was 0x43)\
           |   +----------- 20/40 MHz bandwidth selection (?)\
