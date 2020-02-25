@@ -47,3 +47,61 @@ Use this driver only if you absolutely know what you are doing. A misuse can lea
 You are using the driver at your own risk! It is your responsibility to doublecheck the correct country setting before every use. You should also, probably, limit TX power not to cause any interference.
 
 
+## RFlib:
+The rflib library seems to be distributed separated from the driver itself. The driver can either statically link the distributed `mtlk_rflib.a` library or just use copied rflib sources. The kernel modules from multiple routers use version 3.4 of the driver licensed under GPL, but the source codes for v3.4 rflib are yet to be found. Even worse, the distributed `mtlk_rflib.a` is precompiled for non WAVE300 devices. For these reasons we need to backport the rflib sources from version 3.5 (sort of an obsoleted dead branch of development).\
+The WAVE300 is not officially supported in v3.5 (and after WAVE300 devices have 5.x branch), but the support is still not removed. The sane assumption is the rflib part didn't change too much. I've disassembled the archive files from v3.4 and compared few percents of the code with v3.5 and it confirms it.
+
+The v3.5 rflib source code `lq-wave-300-03.05.00.00.53.a2676e338c1e.rflib.wls.src.tar.bz2` can be obtained from: [Google Drive](https://drive.google.com/file/d/1Bozk1Cc8fB-FMgkxegyaSIBxru08bwJv/view).
+
+As suggested in the openwrt forum, the updates are being distributed in a separate repo (currently through Google drive).
+
+## Installation:
+Obtain `wave300_rflib` sources from the external repo and copy them into the driver (from one top source directory to other top source directory).\
+Set your compiled openwrt root in the file `support/ugw.env.common` with variable `DEFAULT_TOOLCHAIN_PATH`. The driver requires libnl-3 library (not libnl-tiny).\
+The ./Makefile in the root is a special file. It starts the build (not the ./configure).
+
+Do NOT run ./configure. It will delete ./Makefile, mess the build system and you will lose Kconfig support.
+
+Some combinations of missing files may be undefined. You can delete all build-oriented files by:
+`make distclean`\
+The default options should create the working driver. Other options may cause kernel crashes or gcc refuses to compile them (patches are welcome): `make menuconfig`
+`make`
+
+It seems -j flag for make doesn't make much (almost no parallelization possible, too much dependencies). For every file some perl script is started (I think it is generating "SLID" debug info).
+
+Resulting files are in `builds/ugw5.4-vrx288/binaries/wls/driver`. Copy them into the standard place in `/lib/modules`. Copy the firmware files into `/lib/firmware`.
+
+Insert the modules with the following commands:\
+`insmod mtlkroot.ko`
+`insmod mtlk.ko ap=1`
+
+Use iwpriv for setting TX power (there is a list).
+Set your own country: `iwpriv wlan0 sCountry XXX`\
+The global settings, not sure if the driver supports this interface:
+
+`iw reg set XXX`
+`iwconfig wlan0 essid test`
+`ifconfig wlan0 10.0.0.42 netmask 255.255.255.0 up`
+
+If the driver still didn't crash, do iperf/iperf3 test.
+
+Unloading the modules causes crash, stopping the interface should be OK.
+
+## Conclusions
+
+The driver has very complicated macros, build system and function calls used probably for some code robustness. Problem is this complexity is probably causing another bugs (read git log). The best way for the continuation of the opens ource driver is a complete independent GPL rewrite of the driver. Anyway, the patches are welcomed.
+
+The problems:
+* write interface documentation from the driver, use it for new GPL driver
+* search for a newer firmwares, documentation, source codes, etc...
+* build process: Fix makefiles, Kconfig support in configure, autodetect libraries (like libnl) for host and target, speed up and parallelization, out of the tree build
+* Only some (default) configurations are valid, others fails on various problems, find them and fix them
+* Add more configuration options (STA_REF_DBG, there is probably more)
+* Remove WAVE400+ support, dead code (from v3.5 there is change in ABI, incompatible with latest v3.4 wave300, newer chipsets are still supported by Intel)
+* Remove pre 4.14 kernel support (cannot be tested)
+* Fix Station mode. It seems the driver won't even try to communicate with chip without ap=1 parameter
+* Fix random crashes (= understand driver's macro hell)
+* Add hostapd and wpa_supplicant support
+* Add fixes from newer versions (rest 3.5 and 5.x)
+
+###### Much thanks to all the people involved in development and testing.
