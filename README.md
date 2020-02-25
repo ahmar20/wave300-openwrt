@@ -11,7 +11,7 @@ The WAVE300 is a 802.11 abgn PCI(e) (depends on PHY version and chip sub-type). 
 More information is available in following links:\
 [Hardware Info @OpenWrt](https://openwrt.org/docs/techref/hardware/soc/soc.lantiq#wave300)\
 [Hardware Info @WikiDevi](https://wikidevi.com/wiki/Lantiq#WAVE300)\
-[WAVE300 Forum @OpenWrt](https://forum.openwrt.org/t/support-for-wave-300-wi-fi-chip/24690)\
+[WAVE300 Forum @OpenWrt](https://forum.openwrt.org/t/support-for-wave-300-wi-fi-chip/24690)
 
 ## Firmware and its parts
 The driver tries to load up to 6 different firmware files (depending on your device).
