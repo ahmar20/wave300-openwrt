@@ -28,8 +28,8 @@ MAC layer firmware (upper). This firmware is required for the Station operation.
 Lower interface (PCI/PCIe communication with the driver). Found in the same places as upper firmware. Again MIPS (are there 2 CPUs in the chip?). Without this binary, the wifi won't communicate.  
 The last two are loaded when the interface is enabled. The name decoding is based on the type/revision values stored in the EEPROM. They are versioned (although most of them are same). The version uint16 is located at 0x00001f8c in the "HW firmware" file.
 
-5. ProgModel_BG_nCB_wave300.bin         - PHY firmware (?)
-5. ProgModel_BG_nCB_3D_RevB_wave300.bin - HW firmware (?)
+5. ProgModel_BG_nCB_wave300.bin - PHY firmware (?)
+6. ProgModel_BG_nCB_3D_RevB_wave300.bin - HW firmware (?)\
 &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; |\
 &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; + - - HW revision\
 &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; + - - - - - HW type, 0x3D seems to be the newest (but one cal_wlan0 was 0x43)\
