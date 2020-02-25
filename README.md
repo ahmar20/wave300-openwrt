@@ -1,5 +1,8 @@
 # Lantiq WAVE300 Driver
-WAVE300 Driver Development for OpenWrt
+WAVE300 Driver Development for OpenWrt\
+The original source of the info and code is: https://repo.or.cz/wave300.git
+
+Initially driver was being ported by [Vittorio Alfieri](https://forum.openwrt.org/u/vittorio88) and [Mandrake Lee](https://forum.openwrt.org/u/mandrake-lee) (mainly) but then the development was appraently stopped due to lack of testers/much work. This code was ported by [Peter Cvek](https://forum.openwrt.org/u/pc2005) and tested by him and [me](https://forum.openwrt.org/u/ahmar16), initially.
 
 ## Introduction
 The WAVE300 WiFi driver seems to be obsoleted and no longer developed. This causes problems for anyone trying to use it in the current OpenWrt environment as driver API gets old and incompatible with newer kernel versions. This repo is trying to fix the original driver and keep it updated.\
@@ -42,4 +45,5 @@ Copy all the files into `/lib/firmware`.
 This code was initially updated in the minimal way not to introduce any WiFi malfunctions but there still may be some bugs in the original code. Furthermore `rflib` was backported from the newer (3.5) version and there are also different versions of the firmware which may be incompatible with each other at some stage. The driver does not support rfkill interface (not sure if at the moment or permanently).\
 Use this driver only if you absolutely know what you are doing. A misuse can lead to jamming the 2.4 and 5 GHz bands.\
 You are using the driver at your own risk! It is your responsibility to doublecheck the correct country setting before every use. You should also, probably, limit TX power not to cause any interference.
+
 
