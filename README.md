@@ -2,7 +2,7 @@
 WAVE300 Driver Development for OpenWrt\
 The original source of the info and code is: https://repo.or.cz/wave300.git
 
-Initially driver was being ported by [Vittorio Alfieri](https://forum.openwrt.org/u/vittorio88) and [Mandrake Lee](https://forum.openwrt.org/u/mandrake-lee) (mainly) but then the development was appraently stopped due to lack of testers/much work. This code was ported by [Peter Cvek](https://forum.openwrt.org/u/pc2005) and tested by him and [me](https://forum.openwrt.org/u/ahmar16), initially.
+Initially driver was being ported by [Vittorio Alfieri](https://forum.openwrt.org/u/vittorio88) and [Mandrake Lee](https://forum.openwrt.org/u/mandrake-lee) (mainly) but then the development was apparently stopped due to lack of testers/much work. This code was ported by [Peter Cvek](https://forum.openwrt.org/u/pc2005) and tested by him and [me](https://forum.openwrt.org/u/ahmar16), initially.
 
 ## Introduction
 The WAVE300 WiFi driver seems to be obsoleted and no longer developed. This causes problems for anyone trying to use it in the current OpenWrt environment as driver API gets old and incompatible with newer kernel versions. This repo is trying to fix the original driver and keep it updated.\
