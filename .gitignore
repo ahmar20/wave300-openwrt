@@ -1,9 +1,0 @@
-.wave300_driver.ko.cmd
-.wave300_driver.mod.o.cmd
-.wave300_driver.o.cmd
-Module.symvers
-wave300_driver.mod.c
-wave300_driver.mod.o
-wave300_driver.o
-.tmp_versions/wave300_driver.mod
-.vscode/c_cpp_properties.json
