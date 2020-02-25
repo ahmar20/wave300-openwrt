@@ -32,7 +32,7 @@ The last two are loaded when the interface is enabled. The name decoding is base
 6. ProgModel_BG_nCB_3D_RevB_wave300.bin - HW firmware (?)\
 &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; |\
 &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; + - - HW revision\
-&ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; + - - - - - HW type, 0x3D seems to be the newest (but one cal_wlan0 was 0x43)\
+&ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; + - - - - - &nbsp;HW type, 0x3D seems to be the newest (but one cal_wlan0 was 0x43)\
 &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; | &ensp; &ensp; + - - - - - - - - - 20/40 MHz bandwidth selection (?)\
 &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp;+ - - - - - - - - - - - - - 11bgn or 11a (2.4GHz or 5GHz)\
 
