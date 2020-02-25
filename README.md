@@ -58,13 +58,12 @@ The v3.5 rflib source code `lq-wave-300-03.05.00.00.53.a2676e338c1e.rflib.wls.sr
 As suggested in the openwrt forum, the updates are being distributed in a separate repo (currently through Google drive).
 
 ## Compilation and Installation
-You will need to have a working OpenWrt source for this step. If you don't have it yet then first compile it.\
-You will need to set some Kernel options for debugging because the driver seems to crash if those are not enabled.
+You will need to have a working OpenWrt source for this step. If you don't have it yet then first compile it. You will also need to set some Kernel options for debugging because the driver seems to crash if those are not enabled.
 
 Run `make menuconfig` in your OpenWrt source directory and navigate to:\
-Global Build Settings -> Kernel Build Options\
-Select "Compile the kernel with symbol table information" and also "Compile the kernel with debug information" to enable them\
-Set any other options within the menu if you are compiling for the first time, also install `libnl` package if not installed before.
+`Global Build Settings -> Kernel Build Options`\
+Select "Compile the kernel with symbol table information" and also "Compile the kernel with debug information" to enable them and set any other options within the menu if you are compiling for the first time, also install `libnl` package if not installed before.
+
 For more information refer to [OpenWrt Build System Guide](https://openwrt.org/docs/guide-developer/build-system/start).
 
 Clone this repo and obtain `wave300_rflib` sources from the above (Google drive) repo and copy them into the driver (from one top source directory to other top source directory).\
