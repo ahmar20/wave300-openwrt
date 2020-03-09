@@ -66,7 +66,7 @@ select "Compile the kernel with symbol table information" and also "Compile the 
 
 Once OpenWrt source environment is set up, execute following commands to install `libnl` package (whic is mandatory for driver):\
 `./scripts/feeds update -a`\
-`./scripts/feeds install libnl`
+`./scripts/feeds install libnl`\
 `make package/libnl/{clean,compile}`
 
 #### Prepare Driver Source
@@ -82,6 +82,8 @@ Run `make menuconfig` to configure the options and then execute `make` to start 
 It seems -j flag for make doesn't do much (almost no parallelization possible, too much dependencies). For every file some perl script is started (I think it is generating "SLID" debug info).
 
 Resulting files are in `./builds/ugw5.4-vrx288/binaries/wls/driver`. Copy them into the standard place in `/lib/modules`. Copy the firmware files into `/lib/firmware`.
+
+#### Driver Installation and Device Initialization
 
 Insert the modules with the following commands:\
 `insmod mtlkroot.ko`\
