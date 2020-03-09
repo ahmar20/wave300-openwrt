@@ -60,22 +60,17 @@ As suggested in the openwrt forum, the updates are being distributed in a separa
 ## Compilation and Installation
 You will need to have a working OpenWrt source for this step. If you don't have it yet then first compile it. You will also need to set some Kernel options for debugging because the driver seems to crash if those are not enabled.
 
-Run `make menuconfig` in your OpenWrt source directory and navigate to:\
-`Global Build Settings -> Kernel Build Options`\
-Select "Compile the kernel with symbol table information" and also "Compile the kernel with debug information" to enable them and set any other options within the menu if you are compiling for the first time, also install `libnl` package if not installed before.
+Run `make menuconfig` in your OpenWrt source directory and navigate to `Global Build Settings -> Kernel Build Options` and
+select "Compile the kernel with symbol table information" and also "Compile the kernel with debug information" to enable them and set any other options within the menu if you are compiling for the first time. For more information refer to [OpenWrt Build System Guide](https://openwrt.org/docs/guide-developer/build-system/start).
 
-For more information refer to [OpenWrt Build System Guide](https://openwrt.org/docs/guide-developer/build-system/start).
-
-Clone this repo and obtain `wave300_rflib` sources from the above (Google drive) repo and copy them into the driver (from one top source directory to other top source directory).\
-Set your compiled OpenWrt root in the file `./support/ugw.env.common` with variable `DEFAULT_TOOLCHAIN_PATH`. The driver requires libnl-3 library (not libnl-tiny).\
-The ./Makefile in the root is a special file. It starts the build (not the ./configure).
-
+Clone this repo and obtain `wave300_rflib` sources from the above repo and copy them into the driver (from one top source directory to other top source directory).\
+Set your compiled OpenWrt root in the file `support/ugw.env.common` with variable `DEFAULT_TOOLCHAIN_PATH`. The driver requires libnl library (not libnl-tiny).\
 Do NOT run ./configure. It will delete ./Makefile, mess the build system and you will lose Kconfig support.
 
-Some combinations of missing files may be undefined. You can delete all build-oriented files by: `make distclean`\
-The default options should create the working driver. Other options may cause kernel crashes or gcc refuses to compile them (patches are welcome): `make menuconfig`\
-Execute `make` to start building the driver.
+Some combinations of missing files may be undefined. You can delete all build-oriented files by `make distclean`.
+The default options should create the working driver. Other options may cause kernel crashes or gcc refuses to compile them (patches are welcome).\
 
+Run `make menuconfig` to configure the options and then execute `make` to start building the driver.\
 It seems -j flag for make doesn't make much (almost no parallelization possible, too much dependencies). For every file some perl script is started (I think it is generating "SLID" debug info).
 
 Resulting files are in `./builds/ugw5.4-vrx288/binaries/wls/driver`. Copy them into the standard place in `/lib/modules`. Copy the firmware files into `/lib/firmware`.
