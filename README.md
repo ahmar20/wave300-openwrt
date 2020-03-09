@@ -8,7 +8,7 @@ Initially driver was being ported by [Vittorio Alfieri](https://forum.openwrt.or
 The WAVE300 WiFi driver seems to be obsoleted and no longer developed. This causes problems for anyone trying to use it in the current OpenWrt environment as driver API gets old and incompatible with newer kernel versions. This repo is trying to fix the original driver and keep it updated.\
 The WAVE300 is a 802.11 abgn PCI(e) (depends on PHY version and chip sub-type). The controller originates from Metalink (that's why mtlk.ko), developed by Lantiq and nowadays owned by Intel.
 
-This driver has been tested without security (WPA/WPA2) and working for OpenWrt v18.06.5 and the host system was Ubuntu.
+This driver has been tested without security (WPA/WPA2) and working for OpenWrt v18.06.2 and the host system was Ubuntu.
 
 More information is available in following links:\
 [Hardware Info @OpenWrt](https://openwrt.org/docs/techref/hardware/soc/soc.lantiq#wave300)\
@@ -41,17 +41,15 @@ The last two are loaded when the interface is enabled. The name decoding is base
 &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; | &ensp; &ensp; + - - - - - - - - - 20/40 MHz bandwidth selection (?)\
 &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp;+ - - - - - - - - - - - - - 11bgn or 11a (2.4GHz or 5GHz)\
 
-Copy all the files into `/lib/firmware`.
-
 #### Warning:
-This code was initially updated in the minimal way not to introduce any WiFi malfunctions but there still may be some bugs in the original code. Furthermore `rflib` was backported from the newer (3.5) version and there are also different versions of the firmware which may be incompatible with each other at some stage. The driver does not support rfkill interface (not sure if at the moment or permanently).\
+This code was initially updated in the minimal way not to introduce any WiFi malfunctions but there still may be many bugs in the original code. Furthermore `rflib` was backported from the newer (3.5) version and there are also different versions of the firmware which may be incompatible with each other at some stage. The driver does not support rfkill interface (not sure if at the moment or permanently).\
 Use this driver only if you absolutely know what you are doing. A misuse can lead to jamming the 2.4 and 5 GHz bands.\
-You are using the driver at your own risk! It is your responsibility to doublecheck the correct country setting before every use. You should also, probably, limit TX power not to cause any interference.
+You are using the driver at your own risk! It is your responsibility to double-check the correct country settings before every use. You should also, probably, limit TX power not to cause any interference.
 
 
 ## RF Library (rflib)
 The rflib library seems to be distributed separated from the driver itself. The driver can either statically link the distributed `mtlk_rflib.a` library or just use copied rflib sources. The kernel modules from multiple routers use version 3.4 of the driver licensed under GPL, but the source codes for v3.4 rflib are yet to be found. Even worse, the distributed `mtlk_rflib.a` is precompiled for non WAVE300 devices. For these reasons we need to backport the rflib sources from version 3.5 (sort of an obsoleted dead branch of development).\
-The WAVE300 is not officially supported in v3.5 (and after WAVE300 devices have 5.x branch), but the support is still not removed. The sane assumption is the rflib part didn't change too much. I've disassembled the archive files from v3.4 and compared few percents of the code with v3.5 and it confirms it.
+The WAVE300 is not officially supported in v3.5 (and after WAVE300 devices have 5.x branch), but the support is still not removed. The sane assumption is the rflib part didn't change too much. I've (Peter Cvek) disassembled the archive files from v3.4 and compared few percents of the code with v3.5 and it confirms it.
 
 The v3.5 rflib source code `lq-wave-300-03.05.00.00.53.a2676e338c1e.rflib.wls.src.tar.bz2` can be obtained from [this](https://repo.or.cz/wave300_rflib.git) repo and all the complete source can be obtained from: [Google Drive](https://drive.google.com/file/d/1Bozk1Cc8fB-FMgkxegyaSIBxru08bwJv/view) (1Gb size).
 
