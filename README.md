@@ -49,7 +49,7 @@ You are using the driver at your own risk! It is your responsibility to double-c
 
 ## RF Library (rflib)
 The rflib library seems to be distributed separated from the driver itself. The driver can either statically link the distributed `mtlk_rflib.a` library or just use copied rflib sources. The kernel modules from multiple routers use version 3.4 of the driver licensed under GPL, but the source codes for v3.4 rflib are yet to be found. Even worse, the distributed `mtlk_rflib.a` is precompiled for non WAVE300 devices. For these reasons we need to backport the rflib sources from version 3.5 (sort of an obsoleted dead branch of development).\
-The WAVE300 is not officially supported in v3.5 (and after WAVE300 devices have 5.x branch), but the support is still not removed. The sane assumption is the rflib part didn't change too much. I've (Peter Cvek) disassembled the archive files from v3.4 and compared few percents of the code with v3.5 and it confirms it.
+The WAVE300 is not officially supported in v3.5 (and after WAVE300 devices have 5.x branch), but the support is still not removed. The same assumption is the rflib part didn't change too much. Peter Cvek disassembled the archive files from v3.4 and compared few percents of the code with v3.5 and it confirms it.
 
 The v3.5 rflib source code `lq-wave-300-03.05.00.00.53.a2676e338c1e.rflib.wls.src.tar.bz2` can be obtained from [this](https://repo.or.cz/wave300_rflib.git) repo and all the complete source can be obtained from: [Google Drive](https://drive.google.com/file/d/1Bozk1Cc8fB-FMgkxegyaSIBxru08bwJv/view) (1Gb size).
 
@@ -74,7 +74,7 @@ Set your compiled OpenWrt root in the file `support/ugw.env.common` with variabl
 Do NOT run ./configure. It will delete ./Makefile, mess the build system and you will lose Kconfig support.
 
 Some combinations of missing files may be undefined. You can delete all build-oriented files by `make distclean`.
-The default options should create the working driver. Other options may cause kernel crashes or gcc refuses to compile them (patches are welcome).\
+The default options should create the working driver. Other options may cause kernel crashes or gcc refuses to compile them (patches are welcome).
 
 Run `make menuconfig` to configure the options and then execute `make` to start building the driver.\
 It seems -j flag for make doesn't do much (almost no parallelization possible, too much dependencies). For every file some perl script is started (I think it is generating "SLID" debug info).
