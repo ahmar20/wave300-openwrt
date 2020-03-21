@@ -39,7 +39,7 @@ The last two are loaded when the interface is enabled. The name decoding is base
 &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; + - - HW revision\
 &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; | &ensp; &ensp; | &ensp; &ensp; + - - - - - &nbsp;HW type, 0x3D seems to be the newest (but one cal_wlan0 was 0x43)\
 &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; | &ensp; &ensp; + - - - - - - - - - 20/40 MHz bandwidth selection (?)\
-&ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp;+ - - - - - - - - - - - - - 11bgn or 11a (2.4GHz or 5GHz)\
+&ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp; &ensp;+ - - - - - - - - - - - - - 11bgn or 11a (2.4GHz or 5GHz)
 
 #### Warning:
 This code was initially updated in the minimal way not to introduce any WiFi malfunctions but there still may be many bugs in the original code. Furthermore `rflib` was backported from the newer (3.5) version and there are also different versions of the firmware which may be incompatible with each other at some stage. The driver does not support rfkill interface (not sure if at the moment or permanently).\
@@ -79,9 +79,10 @@ The default options should create the working driver. Other options may cause ke
 Run `make menuconfig` to configure the options and then execute `make` to start building the driver.\
 It seems -j flag for make doesn't do much (almost no parallelization possible, too much dependencies). For every file some perl script is started (I think it is generating "SLID" debug info).
 
-Resulting files are in `./builds/ugw5.4-vrx288/binaries/wls/driver`. Copy them into the standard place in `/lib/modules`. Copy the firmware files into `/lib/firmware`.
+Resulting files/modules should be in `./builds/ugw5.4-vrx288/binaries/wls/driver`.
 
 #### Driver Installation and Device Initialization
+Copy generated files into the standard place, in your device, in `/lib/modules`. Copy the relevant firmware files into `/lib/firmware`. Driver does not work without the firmware files.
 
 Insert the modules with the following commands:\
 `insmod mtlkroot.ko`\
@@ -101,19 +102,19 @@ Unloading the modules causes crash, stopping the interface should be OK.
 
 ## Conclusions
 
-The driver has very complicated macros, build system and function calls used probably for some code robustness. Problem is this complexity is probably causing another bugs (read git log). The best way for the continuation of the opens ource driver is a complete independent GPL rewrite of the driver. Anyway, the patches are welcomed.
+The driver has very complicated macros, build system and function calls. Whic are being used probably for some code robustness. Problem is this complexity is probably causing another bugs. The best way for the continuation of the opensource driver is a complete independent GPL rewrite of the driver. But in any case, the patches are welcome.
 
 The problems:
-* write interface documentation from the driver, use it for new GPL driver
-* search for a newer firmwares, documentation, source codes, etc...
-* build process: Fix makefiles, Kconfig support in configure, autodetect libraries (like libnl) for host and target, speed up and parallelization, out of the tree build
-* Only some (default) configurations are valid, others fails on various problems, find them and fix them
-* Add more configuration options (STA_REF_DBG, there is probably more)
-* Remove WAVE400+ support, dead code (from v3.5 there is change in ABI, incompatible with latest v3.4 wave300, newer chipsets are still supported by Intel)
+* Write interface documentation from the driver, use it for new GPL driver
+* Search for newer firmware files, documentation, source codes, etc...
+* Build process: Fix makefiles, Kconfig support in configure, autodetect libraries (like libnl) for host and target, speed up and parallelization out of the tree build
+* Only some (default) configurations are valid, others fail with various issues, find them and fix them
+* Add more configuration options (STA_REF_DBG, there are probably more)
+* Remove WAVE400+ support and any dead code (from v3.5 there is change in ABI, incompatible with latest v3.4 wave300, newer chipsets are still supported by Intel)
 * Remove pre 4.14 kernel support (cannot be tested)
-* Fix Station mode. It seems the driver won't even try to communicate with chip without ap=1 parameter
-* Fix random crashes (= understand driver's macro hell)
+* Fix Station mode; It seems the driver won't even try to communicate with chip without `ap=1` parameter
+* Fix random crashes (understand driver's macro hell)
 * Add hostapd and wpa_supplicant support
-* Add fixes from newer versions (rest 3.5 and 5.x)
+* Add fixes from newer versions (rest 3.5 and 5.x) (patches are welcome)
 
 ###### Much thanks to all the people involved in development and testing.
