@@ -1,0 +1,112 @@
+######################################################################################### OpenWrt source compilation for wave300
+## Linux 4.15.0-130-generic #134-Ubuntu SMP Tue Jan 5 20:46:26 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+
+cd ~
+
+if ! [ -d openwrt ] 
+then
+    sudo apt install build-essential ccache ecj fastjar file g++ gawk \
+    gettext git java-propose-classpath libelf-dev libncurses5-dev \
+    libncursesw5-dev libssl-dev python python2.7-dev python3 unzip wget \
+    python3-distutils python3-setuptools rsync subversion swig time \
+    xsltproc zlib1g-dev flex bison
+
+    git clone https://git.openwrt.org/openwrt/openwrt.git
+    
+    wget https://raw.githubusercontent.com/garlett/wave300/master/1000-xrx200-pcie-msi-fix.patch #<suleiman>
+else    
+    echo 'openwrt directory found, skiping downloads (apt install, git colone, 1000-xrx200-pcie-msi-fix.patch)'
+fi
+
+cd openwrt
+
+echo '
+    disclaimer: this is provided without warranties, 
+    double check everything, use at your own risk !
+    
+    after you choose the branch, feeds and patches will be installed, and
+    menuconfig will open, select your router and other packages you like,
+    then make download and compile will be executed, this may take a while,
+    when it finishes, a loud sound test will execute
+'
+git fetch --tags
+branches=$(git tag -l)
+git branch
+select branch in $branches
+do
+    if [ "$branch" = "" ] 
+    then
+        exit
+    fi
+    
+    echo cleaning ...
+    # make clean    # deletes contents of the directories /bin and /build_dir. 
+    make dirclean # deletes contents of the directories /bin and /build_dir and additionally /staging_dir and /toolchain (=the cross-compile tools), /tmp (e.g data about packages) and /logs. 'Dirclean' is your basic “Full clean” operation.
+    # make distclean # nukes everything you have compiled or configured and also deletes all downloaded feeds contents and package sources. 
+    
+    git reset --hard #
+        
+    echo configuring branch $branch ....
+    git checkout $branch
+    git branch
+
+    ./scripts/feeds update -a
+    ./scripts/feeds install -a
+    ./scripts/feeds install libnl
+    
+    
+    if [[ $branch > "v19.07.0" ]] || [[ $branch == "v19.07.0" ]]
+    then
+        wget https://downloads.openwrt.org/releases/${branch:1}/targets/lantiq/xrx200/config.buildinfo -O .config
+    else
+        if [[ $branch < "v18.06.4" ]] || [[ $branch == "v18.06.4" ]] 
+        then
+            wget https://downloads.openwrt.org/releases/${branch:1}/targets/lantiq/xrx200/config.seed -O .config
+        else
+            wget https://downloads.openwrt.org/releases/18.06.4/targets/lantiq/xrx200/config.seed -O .config
+        fi
+    fi
+
+
+
+
+    #<suleiman>
+    for f in ./target/linux/lantiq/patches-*/; 
+    do
+        ln ~/1000-xrx200-pcie-msi-fix.patch $f
+        git add ${f}1000-xrx200-pcie-msi-fix.patch
+    done
+
+    for f in ./target/linux/lantiq/xrx200/config-*; 
+    do
+        if ! grep -q 'CONFIG_PCI_MSI=y' $f
+        then
+            echo 'CONFIG_PCI_MSI=y' >> $f
+        fi
+        if ! grep -q 'CONFIG_PCIE_LANTIQ_MSI=y' $f
+        then
+            echo 'CONFIG_PCIE_LANTIQ_MSI=y' >> $f
+        fi
+    done
+
+    for f in ./target/linux/lantiq/files-*/arch/mips/boot/dts/*;
+    do
+        if ! grep -q 'pcie-reset = <&gpio 21 GPIO_ACTIVE_HIGH>;' $f
+        then
+            sed -i '/&pci0 {/a\\tpcie-reset = <&gpio 21 GPIO_ACTIVE_HIGH>;' $f
+        fi
+    done
+    #</suleiman>
+
+
+
+    make menuconfig
+
+    make download
+    ionice -c 3 nice -n19 make -j4
+    speaker-test -t sine -f 250 -l 1;
+    echo " ***** to flash your router, use the following sysupgrade file:"
+    ls -phl ./bin/targets/lantiq/xrx200/*.bin
+
+    break
+done
