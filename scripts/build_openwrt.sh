@@ -73,8 +73,7 @@ do
     #<suleiman>
     for f in ./target/linux/lantiq/patches-*/; 
     do
-        ln ~/1000-xrx200-pcie-msi-fix.patch $f
-        git add ${f}1000-xrx200-pcie-msi-fix.patch
+        ln ~/scripts/1000-xrx200-pcie-msi-fix.patch $f
     done
 
     for f in ./target/linux/lantiq/xrx200/config-*; 
