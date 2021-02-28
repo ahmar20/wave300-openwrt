@@ -13,7 +13,7 @@ then
 
     git clone https://git.openwrt.org/openwrt/openwrt.git
     
-    wget https://raw.githubusercontent.com/garlett/wave300/master/1000-xrx200-pcie-msi-fix.patch #<suleiman>
+    wget https://raw.githubusercontent.com/garlett/wave300/master/scripts/1000-xrx200-pcie-msi-fix.patch #<suleiman>
 else    
     echo 'openwrt directory found, skiping downloads (apt install, git colone, 1000-xrx200-pcie-msi-fix.patch)'
 fi
