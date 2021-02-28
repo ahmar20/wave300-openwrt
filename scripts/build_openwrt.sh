@@ -9,11 +9,14 @@ then
     gettext git java-propose-classpath libelf-dev libncurses5-dev \
     libncursesw5-dev libssl-dev python python2.7-dev python3 unzip wget \
     python3-distutils python3-setuptools rsync subversion swig time \
-    xsltproc zlib1g-dev flex bison
+    xsltproc zlib1g-dev flex bison nginx
 
     git clone https://git.openwrt.org/openwrt/openwrt.git
     
     wget https://raw.githubusercontent.com/garlett/wave300/master/scripts/1000-xrx200-pcie-msi-fix.patch #<suleiman>
+    
+    # config nginx
+    
 else    
     echo 'openwrt directory found, skiping downloads (apt install, git colone, 1000-xrx200-pcie-msi-fix.patch)'
 fi
@@ -24,10 +27,11 @@ echo '
     disclaimer: this is provided without warranties, 
     double check everything, use at your own risk !
     
-    after you choose the branch, feeds and patches will be installed, and
-    menuconfig will open, select your router and other packages you like,
+    -> After you choose the branch, 
+    feeds and patches will be installed and menuconfig will open.
+    -> Select your router and other packages you like, save and exit.
     then make download and compile will be executed, this may take a while,
-    when it finishes, a loud sound test will execute
+    when it finishes, a loud sound test will execute.
 '
 git fetch --tags
 branches=$(git tag -l)
@@ -73,7 +77,8 @@ do
     #<suleiman>
     for f in ./target/linux/lantiq/patches-*/; 
     do
-        ln ~/scripts/1000-xrx200-pcie-msi-fix.patch $f
+        ln ~/1000-xrx200-pcie-msi-fix.patch $f
+        git add ${f}1000-xrx200-pcie-msi-fix.patch
     done
 
     for f in ./target/linux/lantiq/xrx200/config-*; 
