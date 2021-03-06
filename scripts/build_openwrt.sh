@@ -11,11 +11,23 @@ then
     python3-distutils python3-setuptools rsync subversion swig time \
     xsltproc zlib1g-dev flex bison nginx
 
+    git config --global credential.helper store
+    
     git clone https://git.openwrt.org/openwrt/openwrt.git
     
     wget https://raw.githubusercontent.com/garlett/wave300/master/scripts/1000-xrx200-pcie-msi-fix.patch #<suleiman>
     
     # config nginx
+    # sed -i 'i/  / 
+    echo "
+    server {
+        listen $( ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' ):80;
+        location / {
+            root /home/$(whoami)/openwrt/bin/;
+            autoindex on;
+        }
+    }" # /etc/nginx/nginx.conf
+    sudo nginx -s reload
     
 else    
     echo 'openwrt directory found, skiping downloads (apt install, git colone, 1000-xrx200-pcie-msi-fix.patch)'

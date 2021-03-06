@@ -1,14 +1,7 @@
-################################################# hostapd, rflib and wave300  download and compilation
+#########################################################  rflib and wave300  download and compilation
 ## Linux 4.15.0-130-generic #134-Ubuntu SMP Tue Jan 5 20:46:26 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
 
 cd ~
-
-if ! [ -d hostapd ] 
-then
-    echo git clone https://github.com/benjaminlevine/hostapd-devel-mtlk
-else    
-    echo 'hostapd directory found, skipping download'
-fi
 
 if ! [ -d wave300_rflib ] 
 then
