@@ -1,4 +1,6 @@
-cd ~/wave300/scripts/scp
+cd ~/wave300/scripts
+mkdir scp
+cd scp
 
 if [ "$host" = "" ] # ignore if it was exported
 then
