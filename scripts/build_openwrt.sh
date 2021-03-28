@@ -50,7 +50,7 @@ branches=$(git tag -l)
 git branch
 select branch in $branches
 do
-    if [ "$branch" = "" ] 
+    if [ "$branch" = "" ]
     then
         exit
     fi
