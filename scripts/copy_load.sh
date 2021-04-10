@@ -6,19 +6,19 @@ if [ "$host" = "" ] # ignore if it was exported
 then
     echo "Enter router address: ex:   user@addr"
     read host
-    # sed -i "i/host=$host/" $0
-fi
+    # sed -i "i/host=$host/" $0 fi # TODO: save to file
+fi    
 if [ "$pass" = "" ]
 then
     echo "Enter router password:"
     read pass
-    # sed -i "i/pass=$pass/" $0
+    # sed -i "i/pass=$pass/" $0 # TODO: save to file
 fi
 
 echo 'Before we start, do you want to reboot or clear files from the router and scp link folder?';
-select option in 'No' 'Modules' 'Firmwares' 'Reboot'
+select option in 'No' 'Modules' 'Firmwares' 'Reboot' 'No, only start driver and hostapd' # TODO: create option that copy all files from SCP, maybe just delete "config.conf" ???? sshpass -p $pass scp * $host:/lib/modules/
 do
-    if [ "$option" = "" ] || [ $option = "No" ]
+    if [ "$option" = "" ] || [ "$option" = "No" ]
     then
         break;
     fi
@@ -29,13 +29,26 @@ do
         echo "wait lan reconnect before procede ..."
     fi
 
+    if [ "$option" = "No, only start driver and hostapd" ] # use this option after you have all the files on the router, maybe the simple 'NO' gives same result?
+    then
+        echo "-------------------- Starting mtlkroot.ko ..."
+        sshpass -p $pass ssh $host 'insmod /lib/modules/mtlkroot.ko cdebug=3'
+        echo "-------------------- Starting mtlk.ko ..."
+        sshpass -p $pass ssh $host 'insmod /lib/modules/mtlk.ko ap=1'
+        echo "-------------------- Router info ..."
+        sshpass -p $pass ssh $host 'brctl addif "br-lan" "wlan0" ; iwlist wlan0 f ; iwinfo ; ifconfig wlan0 ; brctl show' # bridge and show info
+        echo "-------------------- Starting mtlk.ko ..."
+        sshpass -p $pass ssh $host '/lib/modules/mtlk-ap /lib/modules/config.conf' # load hostapd
+        exit 1
+    fi
+
     
     shopt -s extglob
-    for file in $( [ $option == Modules ] && ls !(*.bin) 2>/dev/null || ls *.bin 2>/dev/null )
+    for file in $( [ "$option" == 'Modules' ] && ls !(*.bin) 2>/dev/null || ls *.bin 2>/dev/null )
     do
         echo "removing: $file"
         rm ../scp/$(basename $file)
-        sshpass -p $pass ssh $host "rm /lib/$([ $option == Modules ] && echo "modules" || echo "firmware")/$(basename $file)" # remove previus 
+        sshpass -p $pass ssh $host "rm /lib/$([ "$option" == Modules ] && echo "modules" || echo "firmware")/$(basename $file)" # remove previus 
     done
     echo "more?"
 done
@@ -49,11 +62,11 @@ then
     ln ~/wave300/builds/ugw5.4-vrx288/binaries/wls/driver/mtlkroot.ko
     ln ~/openwrt/key-build.pub
     ln ~/hostapd-devel-mtlk/hostapd/hostapd mtlk-ap
-    ln ~/hostapd-devel-mtlk/wpa_supplicant/wpa_supplicant
+    #ln ~/hostapd-devel-mtlk/wpa_supplicant/wpa_supplicant
     sshpass -p $pass scp * $host:/lib/modules/
     
-    sshpass -p $pass ssh $host 'ln /lib/modules/key-build.pub /etc/opkg/keys/$(usign -F -p /lib/modules/key-build.pub)'
-    sshpass -p $pass ssh $host "sed -i 's/downloads.openwrt.org\/releases\/19.07.7/$( ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' )/' /etc/opkg/distfeeds.conf"
+    #sshpass -p $pass ssh $host 'ln /lib/modules/key-build.pub /etc/opkg/keys/$(usign -F -p /lib/modules/key-build.pub)'
+    #sshpass -p $pass ssh $host "sed -i 's/downloads.openwrt.org\/releases\/19.07.7/$( ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' )/' /etc/opkg/distfeeds.conf"
     #sshpass -p $pass ssh $host "sed -i 's/$( ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' )/downloads.openwrt.org\/releases\/19.07.7/' /etc/opkg/distfeeds.conf"
     sshpass -p $pass ssh $host 'opkg update'
     sshpass -p $pass ssh $host 'opkg install kmod-usb-storage block-mount kmod-fs-vfat kmod-nls-cp437 kmod-nls-iso8859-1 '
@@ -86,10 +99,8 @@ do
         last=$(ls ../scp/$firmware*.bin -t1 2> /dev/null | head -n 1 ) #; echo $last
         if [ "$firmware" = 'ProgModel_BG_CB_wave300' ]
         then
-            sshpass -p $pass ssh $host 'iwinfo' # get the interface name here and update on config.conf
-            #sshpass -p $pass ssh $host    sed -i "s/wlan0/wlan$i" config.conf
-            sshpass -p $pass ssh $host 'ifconfig wlan0 192.168.0.1 netmask 255.255.255.0'
-            sshpass -p $pass ssh $host '/lib/modules/mtlk-ap /lib/modules/config.conf ; dmesg | tail -n 69' # load hostapd
+            sshpass -p $pass ssh $host 'brctl addif "br-lan" "wlan0" ; iwlist wlan0 f ; iwinfo ; ifconfig wlan0 ; brctl show' # bridge and show info
+            sshpass -p $pass ssh $host '/lib/modules/mtlk-ap -d /lib/modules/config.conf ; dmesg | tail -n 69' # load hostapd
         fi
         echo -e "$text$last"
         select file in $files
@@ -117,7 +128,7 @@ do
                     sshpass -p $pass ssh $host 'insmod /lib/modules/mtlk.ko ap=1; dmesg | tail -n 69' # try load wave300
                 else
                     echo "-------------------- starting hostapd ..."
-                    sshpass -p $pass ssh $host '/lib/modules/mtlk-ap /lib/modules/config.conf ; dmesg | tail -n 69' # try start hostapd
+                    sshpass -p $pass ssh $host '/lib/modules/mtlk-ap -d /lib/modules/config.conf ; dmesg | tail -n 69' # try start hostapd
                 fi
             fi
             echo -e "$text$last"
