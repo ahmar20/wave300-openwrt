@@ -37,8 +37,9 @@ do
         sshpass -p $pass ssh $host 'insmod /lib/modules/mtlk.ko ap=1'
         echo "-------------------- Router info ..."
         sshpass -p $pass ssh $host 'brctl addif "br-lan" "wlan0" ; iwlist wlan0 f ; iwinfo ; ifconfig wlan0 ; brctl show' # bridge and show info
-        echo "-------------------- Starting mtlk.ko ..."
-        sshpass -p $pass ssh $host '/lib/modules/mtlk-ap /lib/modules/config.conf' # load hostapd
+        echo "-------------------- Starting hostpad in the background ..."
+        sshpass -p $pass ssh -x $host '/lib/modules/mtlk-ap -d /lib/modules/config.conf &>/dev/nul &' # load hostapd
+        echo "-------------------- In a few seconds the wlan0 will be avaiable ..."
         exit 1
     fi
 
