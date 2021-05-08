@@ -44,7 +44,7 @@ echo '
          menuconfig will open with target=lantiq and subtarget=XRX200.
         -> Optionally select your router(target profile) and other packages you like,
          this may(needs to investigate) change opkg magic hash, wich prevents
-         installation of some package from official repositories.
+         installation of some packages from official repositories.
         -> Save and exit.
         
         Then (make download and compile) will be executed, this takes a while,
@@ -60,22 +60,24 @@ do
         exit
     fi
     
-    echo cleaning ...
+    echo '    cleaning ...'
     # make clean    # deletes contents of the directories /bin and /build_dir. 
     make dirclean # deletes contents of the directories /bin and /build_dir and additionally /staging_dir and /toolchain (=the cross-compile tools), /tmp (e.g data about packages) and /logs. 'Dirclean' is your basic “Full clean” operation.
     # make distclean # nukes everything you have compiled or configured and also deletes all downloaded feeds contents and package sources. 
     
+    echo '    git reset ...'
     git reset --hard #
         
-    echo configuring branch $branch ....
+    echo "    configuring branch $branch ...."
     git checkout $branch
     git branch
 
+    echo "    updating feeds ...."
     ./scripts/feeds update -a
     ./scripts/feeds install -a
     ./scripts/feeds install libnl
     
-    echo "Copying OpenWrt 'make menuconfig' '.config' file for the wave300 routers ..."
+    echo "    Copying OpenWrt 'make menuconfig' '.config' file for the wave300 routers ..."
     if [[ $branch > "v19.07.0" ]] || [[ $branch == "v19.07.0" ]]
     then
         wget https://downloads.openwrt.org/releases/${branch:1}/targets/lantiq/xrx200/config.buildinfo -O .config
@@ -91,14 +93,14 @@ do
 
 
     #<suleiman>
-    echo "Applying patches for the wave300 routers ..."
+    echo "    Applying patches for the wave300 routers ..."
     for f in ./target/linux/lantiq/patches-*/; 
     do
         ln ~/1000-xrx200-pcie-msi-fix.patch $f
         git add ${f}1000-xrx200-pcie-msi-fix.patch
     done
 
-    echo "Adding configs for the wave300 routers ..."
+    echo "    Adding configs for the wave300 routers ..."
     for f in ./target/linux/lantiq/xrx200/config-*; 
     do
         if ! grep -q 'CONFIG_PCI_MSI=y' $f
@@ -127,7 +129,7 @@ do
     make download
     ionice -c 3 nice -n19 make -j4
     speaker-test -t sine -f 250 -l 1 > /dev/null
-    echo " ***** to flash your router, use the following sysupgrade file:"
+    echo "     ***** to flash your router, use the following sysupgrade file:"
     ls -phl ./bin/targets/lantiq/xrx200/*.bin
 
     break
