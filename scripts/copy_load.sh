@@ -16,7 +16,7 @@ then
 fi
 
 echo 'Before we start, do you want to reboot or clear files from the router and scp link folder?';
-select option in 'No' 'Modules' 'Firmwares' 'Reboot' 'No, only start driver and hostapd' # TODO: create option that copy all files from SCP, maybe just delete "config.conf" ???? sshpass -p $pass scp * $host:/lib/modules/
+select option in 'No' 'Modules' 'Firmwares' 'Reboot' 'No, only start driver and hostapd' 'Run it at boot' # TODO: create option that copy all files from SCP, maybe just delete "config.conf" ???? sshpass -p $pass scp * $host:/lib/modules/
 do
     if [ "$option" = "" ] || [ "$option" = "No" ]
     then
@@ -40,6 +40,31 @@ do
         echo "-------------------- Starting hostpad in the background ..."
         sshpass -p $pass ssh -x $host '/lib/modules/mtlk-ap -d /lib/modules/config.conf &>/dev/nul &' # load hostapd
         echo "-------------------- In a few seconds the wlan0 will be avaiable ..."
+        exit 1
+    fi
+
+    if [ "$option" = "Run it at boot" ]
+    then
+        echo Creating config ....
+        sshpass -p $pass ssh $host ' echo "#!/bin/sh /etc/rc.common
+START=99
+STOP=10
+start(){
+    insmod /lib/modules/mtlkroot.ko
+    insmod /lib/modules/mtlk.ko ap=1
+    brctl addif "br-lan" "wlan0"
+    /lib/modules/mtlk-ap -d /lib/modules/config.conf &>/dev/nul &
+}
+stop(){
+    echo TODO:
+    # kill mtlk-ap
+    # rmmod mtlk.ko
+    # rmmod mtlkroot.ko
+}" > /etc/init.d/wave300'
+        sshpass -p $pass ssh $host 'chmod +x /etc/init.d/wave300'
+        sshpass -p $pass ssh $host '/etc/init.d/wave300 enable'
+        echo Starting ....
+        sshpass -p $pass ssh $host '/etc/init.d/wave300 start'
         exit 1
     fi
 
