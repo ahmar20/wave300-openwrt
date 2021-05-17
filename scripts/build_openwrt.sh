@@ -30,26 +30,22 @@ then
     sudo nginx -s reload
     
 else    
-    echo 'openwrt directory found, skiping downloads (apt install, git colone, 1000-xrx200-pcie-msi-fix.patch)'
+    echo -e '\e[1;31m[build_openwrt]\e[0m openwrt directory found, skiping downloads (apt install, git colone, 1000-xrx200-pcie-msi-fix.patch)'
 fi
 
 cd openwrt
 
-echo '
+echo -e '\e[1;31m[build_openwrt]\e[0m 
         Disclaimer: this is provided without warranties, 
         double check everything, use at your own risk !
         
         -> After you choose the branch:
          feeds and patches will be installed and
          menuconfig will open with target=lantiq and subtarget=XRX200.
-        -> Optionally select your router(target profile) and other packages you like,
-         this may(needs to investigate) change opkg magic hash, wich prevents
-         installation of some packages from official repositories.
-        -> Save and exit.
-        
-        Then (make download and compile) will be executed, this takes a while,
-        a sound test may play when it finishes.
-'
+        -> Optionally select other packages you like and your
+         router(target: profile? device?; this may(needs to investigate) change opkg magic
+         hash, preventing installation of some packages from official repositories)
+        -> Save and exit.'
 git fetch --tags
 branches=$(git tag -l)
 git branch
@@ -60,24 +56,24 @@ do
         exit
     fi
     
-    echo '    cleaning ...'
+    echo -e '\e[1;31m[build_openwrt]\e[0m cleaning ...'
     # make clean    # deletes contents of the directories /bin and /build_dir. 
     make dirclean # deletes contents of the directories /bin and /build_dir and additionally /staging_dir and /toolchain (=the cross-compile tools), /tmp (e.g data about packages) and /logs. 'Dirclean' is your basic “Full clean” operation.
     # make distclean # nukes everything you have compiled or configured and also deletes all downloaded feeds contents and package sources. 
     
-    echo '    git reset ...'
+    echo -e '\e[1;31m[build_openwrt]\e[0m git reset ...'
     git reset --hard #
         
-    echo "    configuring branch $branch ...."
+    echo -e "\e[1;31m[build_openwrt]\e[0m selecting branch $branch ...."
     git checkout $branch
     git branch
 
-    echo "    updating feeds ...."
+    echo -e '\e[1;31m[build_openwrt]\e[0m updating feeds ....'
     ./scripts/feeds update -a
     ./scripts/feeds install -a
     ./scripts/feeds install libnl
     
-    echo "    Copying OpenWrt 'make menuconfig' '.config' file for the wave300 routers ..."
+    echo -e '\e[1;31m[build_openwrt]\e[0m Downloading OpenWrt default make_menuconfig file for the wave300 routers ...'
     if [[ $branch > "v19.07.0" ]] || [[ $branch == "v19.07.0" ]]
     then
         wget https://downloads.openwrt.org/releases/${branch:1}/targets/lantiq/xrx200/config.buildinfo -O .config
@@ -93,14 +89,14 @@ do
 
 
     #<suleiman>
-    echo "    Applying patches for the wave300 routers ..."
+    echo -e "\e[1;31m[build_openwrt]\e[0m Applying patches for the wave300 routers ..."
     for f in ./target/linux/lantiq/patches-*/; 
     do
         ln ~/1000-xrx200-pcie-msi-fix.patch $f
-        git add ${f}1000-xrx200-pcie-msi-fix.patch
+        git add ${f}1000-xrx200-pcie-msi-fix.patch # for push on the official repo ?
     done
 
-    echo "    Adding configs for the wave300 routers ..."
+    echo -e '\e[1;31m[build_openwrt]\e[0m Appending configs for the wave300 routers ...'
     for f in ./target/linux/lantiq/xrx200/config-*; 
     do
         if ! grep -q 'CONFIG_PCI_MSI=y' $f
@@ -113,7 +109,7 @@ do
         fi
     done
 
-    for f in ./target/linux/lantiq/files-*/arch/mips/boot/dts/*;
+    for f in $(find ./target/linux/lantiq/file* -name '*.dts*'); # ./target/linux/lantiq/files*/arch/mips/boot/dts/*;
     do
         if ! grep -q 'pcie-reset = <&gpio 21 GPIO_ACTIVE_HIGH>;' $f
         then
@@ -121,15 +117,32 @@ do
         fi
     done
     #</suleiman>
+    
+    # TODO: remove gcc extra directory conflicts
+    
+    # TODO: check if user wants to compile for use with  ?kgdb ?over ethernet
+    # add package ?name? that forward serial console to tcp ?
+    # build gbd with phyton? 
+    # disable kernel address space layout randomization -> nokaslr at CONFIG_CMDLINE ?
+    # ? append to file: ./target/linux/lantiq/config*
+    # CONFIG_FRAME_POINTER=y
+    # CONFIG_KGDB=y
+    # CONFIG_KGDB_SERIAL_CONSOLE=y
+    # CONFIG_DEBUG_INFO=y
+    # CONFIG_DEBUG_INFO_DWARF4=y
 
-
-
+    echo -e "\e[1;31m[build_openwrt]\e[0m Starting make menuconfig ..."
     make menuconfig
 
+    echo -e '\e[1;31m[build_openwrt]\e[0m Starting download, this will take some minutes ...'
     make download
+
+    echo -e '\e[1;31m[build_openwrt]\e[0m Starting compilation, this may take hours, a sound test may play when it finishes'
     ionice -c 3 nice -n19 make -j4
     speaker-test -t sine -f 250 -l 1 > /dev/null
-    echo "     ***** to flash your router, use the following sysupgrade file:"
+    
+    # TODO: display elapsed time
+    echo -e '\e[1;31m[build_openwrt]\e[0m to flash your router, use the following sysupgrade file:'
     ls -phl ./bin/targets/lantiq/xrx200/*.bin
 
     break
