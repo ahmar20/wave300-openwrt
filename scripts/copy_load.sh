@@ -56,8 +56,8 @@ start(){
     /lib/modules/mtlk-ap -d /lib/modules/config.conf &>/dev/nul &
 }
 stop(){
-    echo TODO:
-    # kill mtlk-ap
+    killall mtlk-ap
+    brctl delif "br-lan" "wlan0"
     # rmmod mtlk.ko
     # rmmod mtlkroot.ko
 }" > /etc/init.d/wave300'

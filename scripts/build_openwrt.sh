@@ -17,7 +17,7 @@ then
     
     wget https://raw.githubusercontent.com/garlett/wave300/master/scripts/1000-xrx200-pcie-msi-fix.patch #<suleiman>
     
-    # config nginx
+    # config nginx as opkg server, because of possible magic hash mismatch
     # sed -i 'i/  / 
     echo "
     server {
@@ -34,6 +34,10 @@ else
 fi
 
 cd openwrt
+echo -e '\e[1;31m[build_openwrt]\e[0m Downloading OpenWrt versions ...'
+git fetch --tags
+branches=$(git tag -l)
+git branch
 
 echo -e '\e[1;31m[build_openwrt]\e[0m 
         Disclaimer: this is provided without warranties, 
@@ -43,12 +47,9 @@ echo -e '\e[1;31m[build_openwrt]\e[0m
          feeds and patches will be installed and
          menuconfig will open with target=lantiq and subtarget=XRX200.
         -> Optionally select other packages you like and your
-         router(target: profile? device?; this may(needs to investigate) change opkg magic
-         hash, preventing installation of some packages from official repositories)
+         router(target: profile? device?; this will change opkg magic hash,
+         preventing installation of kernel packages from official repositories)
         -> Save and exit.'
-git fetch --tags
-branches=$(git tag -l)
-git branch
 select branch in $branches
 do
     if [ "$branch" = "" ]
@@ -93,7 +94,8 @@ do
     for f in ./target/linux/lantiq/patches-*/; 
     do
         ln ~/1000-xrx200-pcie-msi-fix.patch $f
-        git add ${f}1000-xrx200-pcie-msi-fix.patch # for push on the official repo ?
+        # TODO: fix makefile section incompatibilites with v21(kernel v5)
+        # git add ${f}1000-xrx200-pcie-msi-fix.patch # push to the official repo
     done
 
     echo -e '\e[1;31m[build_openwrt]\e[0m Appending configs for the wave300 routers ...'
@@ -130,6 +132,10 @@ do
     # CONFIG_KGDB_SERIAL_CONSOLE=y
     # CONFIG_DEBUG_INFO=y
     # CONFIG_DEBUG_INFO_DWARF4=y
+    
+    # TODO: link the 4 firmwares bin files to be added in the system image
+    
+    # TODO: find where to put and test if the hostapd patch from v2.7 works with current versions
 
     echo -e "\e[1;31m[build_openwrt]\e[0m Starting make menuconfig ..."
     make menuconfig
@@ -137,7 +143,7 @@ do
     echo -e '\e[1;31m[build_openwrt]\e[0m Starting download, this will take some minutes ...'
     make download
 
-    echo -e '\e[1;31m[build_openwrt]\e[0m Starting compilation, this may take hours, a sound test may play when it finishes'
+    echo -e '\e[1;31m[build_openwrt]\e[0m Starting compilation(low priority on hd and 4 threads), this may take hours, a sound test may play when it finishes'
     ionice -c 3 nice -n19 make -j4
     speaker-test -t sine -f 250 -l 1 > /dev/null
     
