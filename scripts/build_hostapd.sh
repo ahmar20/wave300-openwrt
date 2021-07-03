@@ -25,7 +25,7 @@ for dir in hostapd wpa_supplicant; do
     fi
 
     sed -i "s/benjamin\/router/$(whoami)/" Makefile
-    sed -i "s/linux-4.4.14/$(basename $(find ~/openwrt/build_dir/ -type d -name 'linux-4*' -print -quit))/" Makefile
+    sed -i "s/linux-4.4.14/$(basename $(find ~/openwrt/build_dir/ -type d -name 'linux-[45]*' -print -quit))/" Makefile
     sed -i "s/target-mips_34kc+dsp_musl-1.1.16/$(basename $STAGING_DIR)/" Makefile
     sed -i "s/toolchain-mips_34kc+dsp_gcc-5.3.0_musl-1.1.16/$(basename $( find ~/openwrt/staging_dir/ -maxdepth 1 -type d -name 'toolchain-mips*' -print -quit))/" Makefile
     
