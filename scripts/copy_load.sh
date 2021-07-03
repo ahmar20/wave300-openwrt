@@ -83,15 +83,15 @@ done
 if ! [ -f config.conf ];
 then
     echo " Copying drivers ..."
-    ln ../config.conf
-    ln ~/wave300/builds/ugw5.4-vrx288/binaries/wls/driver/mtlk.ko
-    ln ~/wave300/builds/ugw5.4-vrx288/binaries/wls/driver/mtlkroot.ko
-    ln ~/openwrt/key-build.pub
-    ln ~/hostapd-devel-mtlk/hostapd/hostapd mtlk-ap
-    #ln ~/hostapd-devel-mtlk/wpa_supplicant/wpa_supplicant
+    ln -s ../config.conf
+    ln -s ~/wave300/builds/ugw5.4-vrx288/binaries/wls/driver/mtlk.ko
+    ln -s ~/wave300/builds/ugw5.4-vrx288/binaries/wls/driver/mtlkroot.ko
+    ln -s ~/openwrt/key-build.pub
+    ln -s ~/hostapd-devel-mtlk/hostapd/hostapd mtlk-ap
+    #ln -s ~/hostapd-devel-mtlk/wpa_supplicant/wpa_supplicant
     sshpass -p $pass scp * $host:/lib/modules/
     
-    #sshpass -p $pass ssh $host 'ln /lib/modules/key-build.pub /etc/opkg/keys/$(usign -F -p /lib/modules/key-build.pub)'
+    #sshpass -p $pass ssh $host 'ln -s /lib/modules/key-build.pub /etc/opkg/keys/$(usign -F -p /lib/modules/key-build.pub)'
     #sshpass -p $pass ssh $host "sed -i 's/downloads.openwrt.org\/releases\/19.07.7/$( ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' )/' /etc/opkg/distfeeds.conf"
     #sshpass -p $pass ssh $host "sed -i 's/$( ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' )/downloads.openwrt.org\/releases\/19.07.7/' /etc/opkg/distfeeds.conf"
     sshpass -p $pass ssh $host 'opkg update'
@@ -145,7 +145,7 @@ do
             
             if [[ "$file" != "" ]] 
             then
-                ln $file ../scp/$(basename $file) # ?
+                ln -s $file ../scp/$(basename $file) # ?
                 sshpass -p $pass scp $file $host:/lib/firmware/ # copy new candidate
                 if [[ "${firmware:0:9}" != "ProgModel" ]]
                 then

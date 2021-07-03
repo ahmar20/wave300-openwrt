@@ -34,11 +34,24 @@ echo 'CONFIG_USE_INTERRUPT_POLLING=y' >> .config
 
 make menuconfig
 
+start_time="$(date -u +%s)"
 make 
-speaker-test -t sine -f 250 -l 1 > /dev/null
-echo " ***** after placing firmware files at /lib/firmware"
-echo " ***** copy and insmod in your router the following files:"
-ls -phlrs ~/wave300/builds/ugw5.4-vrx288/binaries/wls/driver/*.ko
+if [ $? == 0 ]
+then
+    echo " ***** after placing firmware files at /lib/firmware"
+    echo " ***** copy and insmod in your router the following files:"
+    ls -phlrs ~/wave300/builds/ugw5.4-vrx288/binaries/wls/driver/*.ko
+fi
+
+echo -e "\e[1;31m[build_openwrt] Total of $(($(date -u +%s)-$start_time)) seconds elapsed for compilation"
+echo -e '\e[1;31m[build_openwrt]\e[0m Hit crtl+c to cancel alarm ...'
+while [ 1 ]
+do
+    x=$( (speaker-test -t sine -f 1250 -l 1) & pid=$!; sleep 0.1s; kill -9 $pid )
+    sleep 7s
+done
+
+
 
 
 
