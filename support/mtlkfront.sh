@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# hack for gcc debug argument that has 3 spaces and bash is processing as 4 arguments, this should be escaped on the calling function
+set -- $(echo "$@" | sed "s/pr_fmt(fmt)=KBUILD_MODNAME \": \" fmt/pr_fmt(fmt)=KBUILD_MODNAME\":\"fmt/") # original arg ->   pr_fmt(fmt)=KBUILD_MODNAME ": " fmt
+#for x
+#do
+#echo "\e[1;33m $x \e[0m " >$(tty)
+#done
+
 #Basic Script configuration
 mtlkfront_do_output_processing=y
 print_when_checking=n
@@ -120,7 +127,7 @@ return $RESULT_VAL
 
 run_stderr_filtered () {
 
-  { $* 2>$abs_builddir/.$$.stderr; echo $?>$abs_builddir/.$$.pipe.result; }
+{ $* 2>$abs_builddir/.$$.stderr; echo $?>$abs_builddir/.$$.pipe.result; } ################################### error
   $FILTER_CMD < $abs_builddir/.$$.stderr 1>&2
 
   RESULT_VAL=`cat $abs_builddir/.$$.pipe.result`
@@ -211,8 +218,10 @@ fi;
 (test x$trace_commands = xy) && (echo "MTLKFRONT invoked for: $*" 1>&2)
 
 #Here we put logger origin ID into the marker supplied by Makefile.am.common
+
 PREPROCESSED_COMMAND=`echo $* | sed -e"s|LOG_LOCAL_OID=MTLKFRONT_WILL_FILL_IT|LOG_LOCAL_OID=$logger_origin_id|g"`
 
 (test x$trace_commands = xy) && (echo "MTLKFRONT will invoke: $PREPROCESSED_COMMAND" 1>&2)
 
 run_filtered $PREPROCESSED_COMMAND
+

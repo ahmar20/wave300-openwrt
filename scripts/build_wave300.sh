@@ -7,23 +7,23 @@ if ! [ -d wave300_rflib ]
 then
     git clone https://repo.or.cz/wave300_rflib.git
 else    
-    echo 'wave300_rflib directory found, skipping download'
+    echo -e '\e[1;31m[build_wave300]\e[0m wave300_rflib directory found, skipping download'
 fi
 
 if ! [ -d wave300 ] 
 then
     git clone https://github.com/garlett/wave300.git
 else    
-    echo 'wave300 directory found, skipping download and some config'
+    echo -e '\e[1;31m[build_wave300]\e[0m wave300 directory found, skipping download and some config'
     make distclean
 fi
 cd wave300
 
-if ! [ -d wireless/driver/rflib ]
-then
-    sed -i "s/cross\/openwrt5/$(whoami)\/openwrt/" support/ugw.env.common
+#if ! [ -d wireless/driver/rflib ]
+#then
+    sed -i "s/DEFAULT_TOOLCHAIN_PATH=.*/DEFAULT_TOOLCHAIN_PATH=\"\/home\/$(whoami)\/openwrt\"/" support/ugw.env.common
     ln -s ~/wave300_rflib/wireless/driver/rflib/ wireless/driver/rflib
-fi
+#fi
 
 
 export STAGING_DIR=~/openwrt/staging_dir/
@@ -42,8 +42,9 @@ then
     echo -e '\e[1;31m[build_wave300]\e[0m copy and insmod in your router the following files:'
     ls -phlrs ~/wave300/builds/ugw5.4-vrx288/binaries/wls/driver/*.ko
 else
+    x=$( (speaker-test -t sine -f 350 -l 1) & pid=$!; sleep 2s; kill -9 $pid )&
     make -w --trace
-    echo -e '\e[1;31m[build_wave300]\e[0m you probably can call the first fail recipe that is not on the openwrt directories ...'
+    echo -e '\e[1;31m[build_wave300]\e[0m you probably can call the first failed recipe that is not on the openwrt directories ...'
 fi
 
 echo -e "\e[1;31m[build_wave300] Total of $(($(date -u +%s)-$start_time)) seconds elapsed for compilation"
