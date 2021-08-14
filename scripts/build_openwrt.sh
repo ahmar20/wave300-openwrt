@@ -1,6 +1,34 @@
 ######################################################################################### OpenWrt source compilation for wave300
 ## Linux 4.15.0-130-generic #134-Ubuntu SMP Tue Jan 5 20:46:26 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
 
+# stdbuf -oL make .... | while read -r line
+# do
+#     echo "$line" 
+#     line=$(echo $line | egrep -o "recipe for target '.*' failed")
+#     line=${line:19:-8}
+#     if [ -s $line ] && ! [ -f /tmp/frecipe ]; then mkfifo /tmp/frecipe && echo "error code" > /tmp/frecipe & fi
+# done
+# if [ -f /tmp/frecipe ]  then make `cat /tmp/frecipe` V=Sc else ... fi
+
+# stdbuf -oL make | { 
+#     while read -r line
+#     do
+#         echo "$line"
+#         line=$(echo $line | egrep -o "recipe for target '.*' failed")
+#         frecipe=$frecipe${line:19:-8}
+#     done
+#     if [ $frecipe != "" ]
+#     then
+#         make $frecipe V=Sc
+#     else
+#         ls 
+#         echo ....
+#     fi
+# }
+
+# exit
+
+start_time="$(date -u +%s)"
 cd ~
 
 if [ -d openwrt ] 
@@ -72,18 +100,18 @@ do
     fi
 
     echo -e '\e[1;31m[build_openwrt]\e[0m What do you like to clean before start?'
-    select option in 'Nothing' 'contents of the directories /bin and /build_dir' 'contents of the directories /bin, /build_dir, /staging_dir, /toolchain, /tmp and /logs' 'everything compiled, configured, downloaded feeds and package sources'
+    select option in 'Nothing' 'contents of the directories /bin and /build_dir' 'contents of the directories /bin, /build_dir, /staging_dir, /toolchain, /tmp and /logs (recommended)' 'everything compiled, configured, downloaded feeds and package sources'
     do
         if [ "$option" = "" ] || [ "$option" = "Nothing" ]
         then
             break;
         fi
-        echo -e "\e[1;31m[build_openwrt]\e[0m Cleaning ($option) ..."
+        echo -e "\e[1;31m[build_openwrt]\e[0m Cleanning ($option) ..."
         if [ "$option" = "contents of the directories /bin and /build_dir" ]
         then
             make clean   
         fi
-        if [ "$option" = "contents of the directories /bin, /build_dir, /staging_dir, /toolchain, /tmp and /logs" ]
+        if [ "$option" = "contents of the directories /bin, /build_dir, /staging_dir, /toolchain, /tmp and /logs (recommended)" ]
         then
             make dirclean
         fi
@@ -103,20 +131,20 @@ do
     git branch
     
     echo -e '\e[1;31m[build_openwrt]\e[0m Updating feeds ....'
-    ./scripts/feeds update -a
-    ./scripts/feeds install -a
-    ./scripts/feeds install libnl
+    ./scripts/feeds update -a || break
+    ./scripts/feeds install -a || break
+    ./scripts/feeds install libnl || break
     
     echo -e '\e[1;31m[build_openwrt]\e[0m Downloading OpenWrt default make_menuconfig file for the wave300 routers ...'
     if [[ $branch > "v19.07.0" ]] || [[ $branch == "v19.07.0" ]]
     then
-        wget https://downloads.openwrt.org/releases/${branch:1}/targets/lantiq/xrx200/config.buildinfo -O .config
+        wget https://downloads.openwrt.org/releases/${branch:1}/targets/lantiq/xrx200/config.buildinfo -O .config || break
     else
         if [[ $branch < "v18.06.4" ]] || [[ $branch == "v18.06.4" ]] 
         then
-            wget https://downloads.openwrt.org/releases/${branch:1}/targets/lantiq/xrx200/config.seed -O .config
+            wget https://downloads.openwrt.org/releases/${branch:1}/targets/lantiq/xrx200/config.seed -O .config || break
         else
-            wget https://downloads.openwrt.org/releases/18.06.4/targets/lantiq/xrx200/config.seed -O .config
+            wget https://downloads.openwrt.org/releases/18.06.4/targets/lantiq/xrx200/config.seed -O .config || break
         fi
     fi
 
@@ -124,20 +152,21 @@ do
 
     #<suleiman>
     echo -e "\e[1;31m[build_openwrt]\e[0m Applying patches for the wave300 routers ..."
-    for f in ./target/linux/lantiq/patches-*/; 
+    for f in ./target/linux/lantiq/patches-4*/;
     do
         rm ${f}1000-xrx200-pcie-msi-fix.patch 2> /dev/null
-        rm ${f}1005-xrx200-pcie-msi-fix.patch 2> /dev/null
-        if [[ $branch < "v20" ]]
-        then
-            ln -s ~/wave300/scripts/1000-xrx200-pcie-msi-fix.patch $f
-            # git add ${f}1000-xrx200-pcie-msi-fix.patch # push to the official repo
-        else
-            ln -s ~/wave300/scripts/1005-xrx200-pcie-msi-fix.patch $f
-            # git add ${f}1005-xrx200-pcie-msi-fix.patch # push to the official repo
-        fi
+        ln -s ~/wave300/scripts/1000-xrx200-pcie-msi-fix.patch $f
+        # git add ${f}1000-xrx200-pcie-msi-fix.patch # push to the official repo
     done
 
+    for f in ./target/linux/lantiq/patches-5*/;
+    do
+        rm ${f}1005-xrx200-pcie-msi-fix.patch 2> /dev/null
+        ln -s ~/wave300/scripts/1005-xrx200-pcie-msi-fix.patch $f
+        # git add ${f}1005-xrx200-pcie-msi-fix.patch # push to the official repo
+    done
+    
+    
     echo -e '\e[1;31m[build_openwrt]\e[0m Appending configs for the wave300 routers ...'
     for f in ./target/linux/lantiq/xrx200/config-*; 
     do
@@ -161,8 +190,6 @@ do
     done
     #</suleiman>
     
-    # TODO: remove gcc extra directory conflicts
-    
     # TODO: check if user wants to compile for use with  ?kgdb ?over ethernet
     # add package ?name? that forward serial console to tcp ?
     # build gbd with phyton? 
@@ -178,31 +205,33 @@ do
     
     # TODO: find if the hostapd patch from v2.7 works with current versions and where to put it
 
+    x=$( (speaker-test -t sine -f 600 -l 1) & pid=$!; sleep 0.6s; kill -9 $pid )
     echo -e "\e[1;31m[build_openwrt]\e[0m Starting make menuconfig ..."
     make menuconfig
     
     echo -e '\e[1;31m[build_openwrt]\e[0m Starting download, this will take some minutes ...'
-    start_time="$(date -u +%s)"
-    make download
-
+    make download 
+    
     threads=$(($(nproc --all) - 1))
-    echo -e "\e[1;31m[build_openwrt]\e[0m Starting compilation(low priority on hd and $threads threads), this may take hours, a sound beep may play when it finishes"
-    ionice -c 3 nice -n19 make -O -j$threads # TODO:  | function find_recipe_fail_reason() read std_in=$1; if ($std_in ~= error) THEN make last_recipe V=sc; exit ELSE last_recipe=$std_in; echo $std_in FI
+    echo -e "\e[1;31m[build_openwrt]\e[0m Starting compilation on low priority for: storage and \e[1;33m$threads\e[0m threads, this may take hours, sound alarm starts when it finishes. `date`"
+    ionice -c 3 nice -n19 make -O -j$threads
 
     if [ $? == 0 ]
     then
-        ls -phl ./bin/targets/lantiq/xrx200/*.bin
-        echo -e '\e[1;31m[build_openwrt]\e[0m Flash your router with one of the above sysupgrade file'
+        ls -phltr ./bin/targets/lantiq/xrx200/*.bin
+        echo -e '\e[1;31m[build_openwrt]\e[0m Use the above sysupgrade file of your router to flash it'
     else
-        echo -e '\e[1;31m[build_openwrt]\e[0m Find run: make (put here the last make[?] recipe) V=sc'
+        echo -e '\e[1;31m[build_openwrt]\e[0m To find details about the error run: make (put here the first failed make recipe) V=sc'
+        #make $frecipe V=sc
     fi
 
-    echo -e "\e[1;31m[build_openwrt] Total of $(($(date -u +%s)-$start_time)) seconds elapsed for compilation"
-    echo -e '\e[1;31m[build_openwrt]\e[0m Hit crtl+c to cancel alarm ...'
+    echo -e "\e[1;31m[build_openwrt]\e[0m Elapsed time: \e[1;33m $(($(date -u +%s)-$start_time)) \e[0m seconds."
+    echo -e '\e[1;31m[build_openwrt]\e[0m Hit Crtl+c to stop alarm ...'
     while [ 1 ]
     do
         x=$( (speaker-test -t sine -f 1250 -l 1) & pid=$!; sleep 0.1s; kill -9 $pid )
         sleep 7s
     done
+
     break
 done
