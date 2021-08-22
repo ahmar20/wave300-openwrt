@@ -31,7 +31,6 @@ do
     mv $dir ${dir/toolchain/renamed_by_build_wave300_toolchain} # rename gcc extra directory conflicts, keep only the newest
 done
 
-
 export STAGING_DIR=~/openwrt/staging_dir/
 
 #suleiman
@@ -68,5 +67,4 @@ do
     x=$( (speaker-test -t sine -f 1250 -l 1) & pid=$!; sleep 0.1s; kill -9 $pid )
     sleep 7s
 done
-
 
