@@ -60,12 +60,21 @@ _mtlk_osal_timer_init (mtlk_osal_timer_t *timer,
   ASSERT(clb != NULL);
 
   memset(timer, 0, sizeof(*timer));
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5,0,0)
   init_timer(&timer->os_timer);
+#else
+  // garlet
+#endif
   mtlk_rmlock_init(&timer->rmlock);
   mtlk_rmlock_acquire(&timer->rmlock); /* Acquire RM Lock initially */
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5,0,0)
   timer->os_timer.data     = (unsigned long)timer;
   timer->os_timer.function = __mtlk_osal_timer_clb;
+#else
+  //garlet
+#endif
+
   timer->clb               = clb;
   timer->clb_usr_data      = clb_usr_data;
   timer->stop              = TRUE;

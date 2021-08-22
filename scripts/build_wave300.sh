@@ -3,6 +3,11 @@
 
 cd ~
 
+for dir in $(ls -dt ~/openwrt/staging_dir/toolchain-mips_24kc_gcc-* | tail -n+2)
+do
+    mv $dir ${dir/toolchain/renamed_by_build_wave300_toolchain} # rename gcc extra directory conflicts, keep only the newest
+done
+
 if ! [ -d wave300_rflib ] 
 then
     git clone https://repo.or.cz/wave300_rflib.git
@@ -25,11 +30,8 @@ then
     ln -s ~/wave300_rflib/wireless/driver/rflib/ wireless/driver/rflib
 fi
 
-
-for dir in $(ls -dt ~/openwrt/staging_dir/toolchain-mips_24kc_gcc-* | tail -n+2)
-do
-    mv $dir ${dir/toolchain/renamed_by_build_wave300_toolchain} # rename gcc extra directory conflicts, keep only the newest
-done
+mkdir -p "tools/mtidl/.deps/" "tools/rtlogger/shared/.deps/" "tools/shared/.deps/"
+touch "tools/mtidl/.deps/mtidl_ini_parser.Po" "tools/rtlogger/shared/.deps/logmacro_database.Po" "tools/shared/.deps/Debug.Po" "tools/shared/.deps/CmdLine.Po" "tools/shared/.deps/aux_utils.Po" "tools/shared/.deps/ParamInfo.Po" "tools/shared/.deps/argv_parser.Po" "tools/shared/.deps/mtlk_socket.Po" "tools/shared/.deps/mtlkirbhash.Po" "tools/shared/.deps/mtlkcontainer.Po" "tools/shared/.deps/mtlk_pathutils.Po"
 
 export STAGING_DIR=~/openwrt/staging_dir/
 

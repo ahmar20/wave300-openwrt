@@ -357,7 +357,11 @@ mtlk_df_user_set_flags(mtlk_df_user_t *df_user, uint32 newflags)
   MTLK_ASSERT(NULL != df_user->dev);
 
   rtnl_lock();
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5,0,0)
   res = dev_change_flags(df_user->dev, newflags);
+#else
+  // garlet
+#endif
   rtnl_unlock();
 
   return res;

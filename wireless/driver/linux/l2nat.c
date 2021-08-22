@@ -576,10 +576,15 @@ int mtlk_l2nat_init (mtlk_l2nat_t *mtlk_l2nat, struct nic *nic)
       ent = &mtlk_l2nat->l2nat_hash_entries[i];
       list_add_tail(&ent->list, &mtlk_l2nat->l2nat_free_entries);
       ent->nic = nic;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5,0,0)
       MTLK_INIT_STEP_VOID_LOOP(l2nat, TIMER_INIT, MTLK_OBJ_PTR(mtlk_l2nat),
                                init_timer, (&ent->timer));
       ent->timer.function = entry_aging_timer_function;
       ent->timer.data = (unsigned long)ent;
+#else
+      // garlet
+#endif
+
     }
 
     MTLK_INIT_STEP_IF(!mtlk_vap_is_ap(nic->vap_handle), l2nat, REG_ABILITIES, MTLK_OBJ_PTR(mtlk_l2nat),

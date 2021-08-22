@@ -7,7 +7,9 @@ define $(module_canonical_name)_BUILD_CMD
      cd $($(module_canonical_name)_src_dir) && \
      echo -n > .mtlk_kernel_target && \
      { test x"$(mtlk_build_kernel_library)" = x"y" || echo modules > .mtlk_kernel_target; } && \
-         $(MAKE) $(KERNEL_MAKE_EXT_PARAMS) -C @kernel_dir@ SUBDIRS=$(CURDIR)/$($(module_canonical_name)_src_dir) `cat .mtlk_kernel_target` \
+         $(MAKE) $(KERNEL_MAKE_EXT_PARAMS) -C @kernel_dir@ SUBDIRS=$(CURDIR)/$($(module_canonical_name)_src_dir) \ 
+                                  M=$(CURDIR)/$($(module_canonical_name)_src_dir) \
+                                  `cat .mtlk_kernel_target` \
                                   abs_srcdir=$(abs_srcdir)/$($(module_canonical_name)_src_dir)/ \
                                   top_srcdir=../$(top_srcdir)/ \
                                   abs_top_builddir=$(abs_top_builddir)/ \
