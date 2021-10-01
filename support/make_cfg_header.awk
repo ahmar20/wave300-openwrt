@@ -23,7 +23,7 @@ BEGIN {
 /^# CONFIG_[A-Z0-9_]+ is not set$/ { sub(/^CONFIG_/, "MTCFG_", $2); print "#undef " $2; next; }
 
 # Text variables
-/^CONFIG_[A-Z0-9_]+=\".*\"$/ { sub(/^CONFIG_/, "MTCFG_", $1); print "#define " $1 " " $2; next; }
+/^CONFIG_[A-Z0-9_]+=".*"$/ { sub(/^CONFIG_/, "MTCFG_", $1); print "#define " $1 " " $2; next; }
 
 # Int variables
 /^CONFIG_[A-Z0-9_]+=[0-9]*$/ { sub(/^CONFIG_/, "MTCFG_", $1); print "#define " $1 " (" $2 ")"; next; }

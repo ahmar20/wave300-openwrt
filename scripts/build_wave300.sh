@@ -8,23 +8,25 @@ do
     mv $dir ${dir/toolchain/renamed_by_build_wave300_toolchain} # rename gcc extra directory conflicts, keep only the newest
 done
 
+if ! [ -d wave300 ] 
+then
+    git clone https://github.com/garlett/wave300.git || break;
+else    
+    echo -e '\e[1;31m[build_wave300]\e[0m wave300 directory found, skipping download ...  make distclean ...'
+    make distclean
+fi
+
 if ! [ -d wave300_rflib ] 
 then
     GIT_SSL_NO_VERIFY=1 git clone https://repo.or.cz/wave300_rflib.git || break;
     # ^ ignores cert error, not recommended
+    echo "dnl Definition of the branch version for configure.ac" > wave300/branch_version.m4.in
+    echo "m4_define([MTLK_BRANCH_VERSION], [@BRANCH_VERSION@])" >> wave300/branch_version.m4.in
 else    
     echo -e '\e[1;31m[build_wave300]\e[0m wave300_rflib directory found, skipping download'
 fi
 
-if ! [ -d wave300 ] 
-then
-    git clone https://github.com/garlett/wave300.git || break;
-    echo "dnl Definition of the branch version for configure.ac
-m4_define([MTLK_BRANCH_VERSION], [@BRANCH_VERSION@])" > wave300/branch_version.m4.in
-else    
-    echo -e '\e[1;31m[build_wave300]\e[0m wave300 directory found, skipping download and some config'
-    make distclean
-fi
+
 cd wave300
 
 sed -i "s/DEFAULT_TOOLCHAIN_PATH=.*/DEFAULT_TOOLCHAIN_PATH=\"\/home\/$(whoami)\/openwrt\"/" support/ugw.env.common
@@ -45,7 +47,7 @@ echo 'CONFIG_USE_INTERRUPT_POLLING=y' >> .config
 make menuconfig
 
 start_time="$(date -u +%s)"
-make 
+make #V=0  # silent not working correctly
 if [ $? != 0 ]
 then
     echo -e '\e[1;31m[build_wave300]\e[0m Compilation failure, restarting with debug verbose ......'
@@ -69,7 +71,7 @@ echo -e "\e[1;31m[build_openwrt]\e[0m Elapsed time: \e[1;33m $(($(date -u +%s)-$
 echo -e '\e[1;31m[build_wave300]\e[0m Hit Crtl+c to stop alarm ...'
 while [ 1 ]
 do
-    x=$( (speaker-test -t sine -f 1250 -l 1) & pid=$!; sleep 0.1s; kill -9 $pid )
+    x=$( (speaker-test -t sine -f 1250 -l 1) & pid=$!; sleep 0.2s; kill -9 $pid )
     sleep 7s
 done
 
