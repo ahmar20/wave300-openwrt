@@ -10,14 +10,17 @@ done
 
 if ! [ -d wave300_rflib ] 
 then
-    git clone https://repo.or.cz/wave300_rflib.git
+    GIT_SSL_NO_VERIFY=1 git clone https://repo.or.cz/wave300_rflib.git || break;
+    # ^ ignores cert error, not recommended
 else    
     echo -e '\e[1;31m[build_wave300]\e[0m wave300_rflib directory found, skipping download'
 fi
 
 if ! [ -d wave300 ] 
 then
-    git clone https://github.com/garlett/wave300.git
+    git clone https://github.com/garlett/wave300.git || break;
+    echo "dnl Definition of the branch version for configure.ac
+m4_define([MTLK_BRANCH_VERSION], [@BRANCH_VERSION@])" > wave300/branch_version.m4.in
 else    
     echo -e '\e[1;31m[build_wave300]\e[0m wave300 directory found, skipping download and some config'
     make distclean
