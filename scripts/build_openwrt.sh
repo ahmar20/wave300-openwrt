@@ -130,9 +130,11 @@ do
     git checkout $branch
     git branch
     
+    
     echo -e '\e[1;31m[build_openwrt]\e[0m Updating feeds ....'
     ./scripts/feeds update -a || break
-    ./scripts/feeds install -a || break
+    echo -e '\e[1;31m[build_openwrt]\e[0m Installing feeds ....'
+    ./scripts/feeds install -a || echo -e '\e[1;31m[build_openwrt]\e[0m Retrying feeds ....'; || ./scripts/feeds update -a || ./scripts/feeds install -a || break # retry, if not work maybe try:  make defconfig;make oldconfig
     ./scripts/feeds install libnl || break
     
     echo -e '\e[1;31m[build_openwrt]\e[0m Downloading OpenWrt default make_menuconfig file for the wave300 routers ...'

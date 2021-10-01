@@ -26,8 +26,8 @@ logger_preprocessing_enabled()
 
 check_mtlk_inc_source_file()
 {
-  awk "/^[[:blank:]]*\#include[[:blank:]]+[\"\<]mtlkinc\.h[\"\>]/ { exit 0; } \
-       /^[[:blank:]]*\#include/ { print NR; exit 1; }" < $1 &&
+  awk "/^[[:blank:]]*#include[[:blank:]]+[\"\<]mtlkinc\.h[\"\>]/ { exit 0; } \
+       /^[[:blank:]]*#include/ { print NR; exit 1; }" < $1 &&
   return 0
   
   return 1
@@ -35,7 +35,7 @@ check_mtlk_inc_source_file()
 
 check_mtlk_inc_header_file()
 {
-  awk "/^[[:blank:]]*\#include[[:blank:]]+[\"\<]mtlkinc\.h[\"\>]/ { print NR; exit 1; }"  < $1 &&
+  awk "/^[[:blank:]]*#include[[:blank:]]+[\"\<]mtlkinc\.h[\"\>]/ { print NR; exit 1; }"  < $1 &&
   return 0
   
   return 1
