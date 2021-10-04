@@ -2,7 +2,7 @@ include $(abs_top_srcdir)/Makefile.am.kbuild
 
 _FW_MBSS_API_VERSION:=$(shell $(abs_top_srcdir)/support/revision_info.sh $(abs_top_srcdir) fw_mbss_api)
 
-EXTRA_CFLAGS+=-DMTLK_FW_MBSS_API_VERSION=$(_FW_MBSS_API_VERSION) -g
+EXTRA_CFLAGS+=-DMTLK_FW_MBSS_API_VERSION=$(_FW_MBSS_API_VERSION) -g 
 
 obj-m := mtlk.o
 
@@ -57,7 +57,10 @@ mtlk-objs := core.o core_ab.o core_pdb.o\
    $(driver_shared_builddir)/fw_recovery.o
 
 
-mtlk-libs := $(driver_rflib_builddir)/mtlk_rflib.a
+libs-y := $(driver_rflib_builddir)/mtlk_rflib.a
+
+KBUILD_MODPOST_WARN = true # garlet: export symbols on rflib are not defined
+
 
 EXTRA_CFLAGS += -I$(abs_driver_shared_srcdir)       \
                 -I$(abs_wireless_shared_srcdir)     \
