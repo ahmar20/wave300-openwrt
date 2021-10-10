@@ -7,7 +7,7 @@ if ! [ -d hostapd-devel-mtlk ]
 then
     git clone https://github.com/benjaminlevine/hostapd-devel-mtlk
 else    
-    echo 'hostapd directory found, skipping download'
+    echo -e '\e[1;31m[build_hostapd]\e[0m hostapd directory found, skipping download'
 fi
 
 
@@ -16,7 +16,7 @@ export STAGING_DIR=$(find ~/openwrt/staging_dir/ -maxdepth 1 -type d -name 'targ
 cd hostapd-devel-mtlk
 for dir in hostapd wpa_supplicant; do
     cd $dir
-    echo " ..... Starting $dir building procedure ...."
+    echo -e "\e[1;31m[build_hostapd]\e[0m ..... starting building procedure for:\e[1;33m $dir \e[0m ...."
     if [ -f Makefile.bkp ]
     then
         cp Makefile.bkp Makefile
@@ -33,13 +33,9 @@ for dir in hostapd wpa_supplicant; do
     cd ..
 done
 cd ..
-echo .... 
-echo .... complete
-echo .... 
-echo cp config.conf and the following two files to your router,
+echo -e '\e[1;31m[build_hostapd]\e[0m done, now copy to your router config.conf and the following two files:'
 ls ~/hostapd-devel-mtlk/hostapd/hostapd -phl
 ls ~/hostapd-devel-mtlk/wpa_supplicant/wpa_supplicant -phl
-echo then rn hostapd to mtlk-ap
-echo and execute ./mtlk-ap config.conf
+echo -e '\e[1;31m[build_hostapd]\e[0m then rn hostapd to mtlk-ap and execute ./mtlk-ap config.conf'
 
-#sound test
+

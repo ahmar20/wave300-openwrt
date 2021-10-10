@@ -1,6 +1,8 @@
 #########################################################  rflib and wave300  download and compilation
 ## Linux 4.15.0-130-generic #134-Ubuntu SMP Tue Jan 5 20:46:26 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
 
+GIT_SSL_NO_VERIFY=1 # ignores git cert error, not recommended
+
 cd ~
 
 for dir in $(ls -dt ~/openwrt/staging_dir/toolchain-mips_24kc_gcc-* | tail -n+2)
@@ -18,8 +20,7 @@ fi
 
 if ! [ -d wave300_rflib ] 
 then
-    GIT_SSL_NO_VERIFY=1 git clone https://repo.or.cz/wave300_rflib.git || break;
-    # ^ ignores cert error, not recommended
+    git clone https://repo.or.cz/wave300_rflib.git || break;
     echo "dnl Definition of the branch version for configure.ac" > wave300/branch_version.m4.in
     echo "m4_define([MTLK_BRANCH_VERSION], [@BRANCH_VERSION@])" >> wave300/branch_version.m4.in
 else    

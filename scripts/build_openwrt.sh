@@ -28,6 +28,8 @@
 
 # exit
 
+GIT_SSL_NO_VERIFY=1 # ignores git cert error, not recommended
+
 start_time="$(date -u +%s)"
 cd ~
 
@@ -134,7 +136,7 @@ do
     echo -e '\e[1;31m[build_openwrt]\e[0m Updating feeds ....'
     ./scripts/feeds update -a || break
     echo -e '\e[1;31m[build_openwrt]\e[0m Installing feeds ....'
-    ./scripts/feeds install -a || echo -e '\e[1;31m[build_openwrt]\e[0m Retrying feeds ....'; || ./scripts/feeds update -a || ./scripts/feeds install -a || break # retry, if not work maybe try:  make defconfig;make oldconfig
+    ./scripts/feeds install -a || echo -e '\e[1;31m[build_openwrt]\e[0m Retrying feeds ....' && ( ./scripts/feeds update -a || ./scripts/feeds install -a || break ) # retry, if not work maybe try:  make defconfig;make oldconfig
     ./scripts/feeds install libnl || break
     
     echo -e '\e[1;31m[build_openwrt]\e[0m Downloading OpenWrt default make_menuconfig file for the wave300 routers ...'
@@ -215,7 +217,7 @@ do
     make download 
     
     threads=$(($(nproc --all) - 1))
-    echo -e "\e[1;31m[build_openwrt]\e[0m Starting compilation on low priority for: storage and \e[1;33m$threads\e[0m threads, this may take hours, sound alarm starts when it finishes. `date`"
+    echo -e "\e[1;31m[build_openwrt]\e[0m starting compilation with low priority for: storage and \e[1;33m$threads\e[0m threads, this may take hours, sound alarm starts when it finishes. `date`"
     ionice -c 3 nice -n19 make -O -j$threads
 
     if [ $? == 0 ]
