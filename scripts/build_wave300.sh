@@ -1,7 +1,7 @@
 #########################################################  rflib and wave300  download and compilation
 ## Linux 4.15.0-130-generic #134-Ubuntu SMP Tue Jan 5 20:46:26 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
 
-GIT_SSL_NO_VERIFY=1 # ignores git cert error, not recommended
+export GIT_SSL_NO_VERIFY=1 # ignores git cert error, not recommended
 
 cd ~
 

@@ -28,7 +28,7 @@
 
 # exit
 
-GIT_SSL_NO_VERIFY=1 # ignores git cert error, not recommended
+export GIT_SSL_NO_VERIFY=1 # ignores git cert error, not recommended
 
 start_time="$(date -u +%s)"
 cd ~
@@ -229,11 +229,11 @@ do
         #make $frecipe V=sc
     fi
 
-    echo -e "\e[1;31m[build_openwrt]\e[0m Elapsed time: \e[1;33m $(($(date -u +%s)-$start_time)) \e[0m seconds."
+    echo -e "\e[1;31m[build_openwrt]\e[0m Elapsed time: \e[1;33m $(($(date -u +%s)-$start_time)) \e[0m seconds.`date`"
     echo -e '\e[1;31m[build_openwrt]\e[0m Hit Crtl+c to stop alarm ...'
     while [ 1 ]
     do
-        x=$( (speaker-test -t sine -f 1250 -l 1) & pid=$!; sleep 0.1s; kill -9 $pid )
+        x=$( (speaker-test -t sine -f 1250 -l 1) & pid=$!; sleep 0.15s; kill -9 $pid )
         sleep 7s
     done
 
