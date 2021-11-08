@@ -216,6 +216,8 @@ do
     echo -e '\e[1;31m[build_openwrt]\e[0m Starting download, this will take some minutes ...'
     make download 
     
+    cp ~/wave300/scripts/led package/base-files/files/etc/init.d/ # version that allow leds to turn off. TODO make patch and pull request
+    
     threads=$(($(nproc --all) - 1))
     echo -e "\e[1;31m[build_openwrt]\e[0m starting compilation with low priority for: storage and \e[1;33m$threads\e[0m threads, this may take hours, sound alarm starts when it finishes. `date`"
     ionice -c 3 nice -n19 make -O -j$threads

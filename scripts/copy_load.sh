@@ -80,9 +80,6 @@ stop(){
 }" > /etc/init.d/wave300'
         sshpass -p $pass ssh $host 'chmod +x /etc/init.d/wave300'
         sshpass -p $pass ssh $host '/etc/init.d/wave300 enable'
-        echo Starting ....
-        sshpass -p $pass ssh $host '/etc/init.d/wave300 start'
-        exit 1
     fi
 
     echo "Do you want run another option?"
@@ -137,7 +134,7 @@ do
 
         while true 
         do
-            sshpass -p $pass ssh $host 'dmesg | tail -n 69' | grep --color=auto -nw $(basename $firmware)
+            sshpass -p $pass ssh $host 'dmesg -c' | grep --color=auto -nw -C 5 $(basename $firmware)
             echo -e "\n-------------------- What do you want to try?"
             last="Last file worked, so lets procede to the next"
             select file in $files
@@ -155,13 +152,11 @@ do
                 if [[ "${firmware:0:9}" != "ProgModel" ]]
                 then
                     echo "-------------------- insmod mtlk.ko ..."
-#                    sshpass -p $pass ssh $host 'rmmod /lib/modules/mtlk.ko' # crashes the router
-                    sshpass -p $pass ssh $host 'insmod /lib/modules/mtlk.ko ap=1' # try insmod wave300
-#                   [ $? = 0 ] && file=$last # if no errors, then go to the next
+                    sshpass -p $pass ssh $host 'rmmod /lib/modules/mtlk.ko'
+                    sshpass -p $pass ssh $host 'insmod /lib/modules/mtlk.ko ap=1'
                 else
                     echo "-------------------- starting hostapd ..."
                     sshpass -p $pass ssh $host '/lib/modules/mtlk-ap -d /lib/modules/config.conf' # try start hostapd
-#                   [ $? = 0 ] && exit;
                 fi
                 break;
             done
