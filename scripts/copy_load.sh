@@ -94,11 +94,9 @@ then
     ln -s ~/hostapd-devel-mtlk/hostapd/hostapd mtlk-ap
     #ln -s ~/hostapd-devel-mtlk/wpa_supplicant/wpa_supplicant
 
-    #echo "Instaling local openwrt build keys ..."
-    #ln -s ~/openwrt/key-build.pub
-    #sshpass -p $pass ssh $host 'ln -s /lib/modules/key-build.pub /etc/opkg/keys/$(usign -F -p /lib/modules/key-build.pub)'
-    #sshpass -p $pass ssh $host "sed -i 's/downloads.openwrt.org\/releases\/19.07.7/$( ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' )/' /etc/opkg/distfeeds.conf"
-    #sshpass -p $pass ssh $host "sed -i 's/$( ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' )/downloads.openwrt.org\/releases\/19.07.7/' /etc/opkg/distfeeds.conf"
+    echo "Configuring local opkg repo ..."
+    sshpass -p $pass ssh $host "cat /etc/opkg/distfeeds.conf | sed -e 's/downloads.openwrt.org\/releases\/[0-9.]*/$HOSTNAME.lan/' > /etc/opkg/customfeeds.conf" # | sed -e 's/openwrt/local/'
+    sshpass -p $pass ssh $host 'mv /etc/opkg/keys/key-build.pub /etc/opkg/keys/$(usign -F -p /etc/opkg/keys/key-build.pub)'
 
     echo "Updating and installing some tools ..."
     sshpass -p $pass ssh $host 'opkg update; opkg install rsync libopenssl'

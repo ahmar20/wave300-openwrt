@@ -45,24 +45,16 @@ else
     python3-distutils python3-setuptools rsync subversion swig time \
     xsltproc zlib1g-dev flex bison nginx
 
-    # TODO: config nginx as opkg server, because of magic hash mismatch, check make menuconfig "build packages repositories" option
-    # sed -i 'i/  / 
-    echo "
-    server {
-        listen $( ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' ):80;
-        location / {
-            root /home/$(whoami)/openwrt/bin/;
-            autoindex on;
-        }
-    }" # /etc/nginx/nginx.conf
-    sudo nginx -s reload
-    
     git config --global credential.helper store
     
     echo -e '\e[1;31m[build_openwrt]\e[0m Clonning OpenWrt ... '
     git clone https://git.openwrt.org/openwrt/openwrt.git
 
-    #wget https://raw.githubusercontent.com/garlett/wave300/master/scripts/1000-xrx200-pcie-msi-fix.patch #<suleiman>
+    echo -e '\e[1;31m[build_openwrt]\e[0m Configuring nginx opkg packages server ... ' # because official repo has different kernel version
+    sed -e "s/http {/http {\n\n    server {\n        listen $HOSTNAME.lan;\n        location \/ \{\n            root \/home\/$(whoami)\/openwrt\/bin\/;\n            autoindex on;\n        \}\n    \}\n/" /etc/nginx/nginx.conf
+    sudo nginx -s reload
+    mkdir -p openwrt/files/etc/opkg/keys/
+    ln -s ~/openwrt/key-build.pub ~/openwrt/file/etc/opkg/keys/
 fi
 
 if [ -d wave300 ] 
@@ -71,6 +63,10 @@ then
 else    
     echo -e '\e[1;31m[build_openwrt]\e[0m Clonning wave300 (for pci patch files) ... '
     git clone https://github.com/garlett/wave300.git
+
+    echo -e '\e[1;31m[build_openwrt]\e[0m Linking Wave300 firmware files inside OpenWrt image  ... '
+    mkdir -p openwrt/files/lib/firmware/
+    ln -s ~/wave300/scripts/firmware/ahmar/*.bin ~/openwrt/files/lib/firmware/
 fi
 
 
@@ -194,6 +190,8 @@ do
     done
     #</suleiman>
     
+    # TODO: find if the hostapd patch from v2.7 works with current versions and where to put it
+
     # TODO: check if user wants to compile for use with  ?kgdb ?over ethernet
     # add package ?name? that forward serial console to tcp ?
     # build gbd with phyton? 
@@ -205,10 +203,8 @@ do
     # CONFIG_DEBUG_INFO=y
     # CONFIG_DEBUG_INFO_DWARF4=y
     
-    # TODO: link the 4 firmwares bin files (ahmar seems to work for everybody) to be added in the system image
+    # TODO: include advanced: ccache and do not auto remove packages
     
-    # TODO: find if the hostapd patch from v2.7 works with current versions and where to put it
-
     x=$( (speaker-test -t sine -f 600 -l 1) & pid=$!; sleep 0.6s; kill -9 $pid )
     echo -e "\e[1;31m[build_openwrt]\e[0m Starting make menuconfig ..."
     make menuconfig
