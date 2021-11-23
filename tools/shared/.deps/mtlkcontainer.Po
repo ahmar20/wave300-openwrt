@@ -1,0 +1,216 @@
+../../../../../tools/shared/linux/../mtlkcontainer.o: \
+ ../../../../../tools/shared/linux/../mtlkcontainer.c \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/stdc-predef.h \
+ /home/jorge/wave300asGIT/wave300-openwrt/builds/ugw5.4-vrx288/config.h \
+ /home/jorge/wave300asGIT/wave300-openwrt/builds/ugw5.4-vrx288/.config.h \
+ ../../../../../tools/shared/linux/mtlkinc.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/stdlib.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/features.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/sys/glibc-types.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/sys/cdefs.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/bits/alltypes.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/alloca.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/arpa/inet.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/netinet/in.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/inttypes.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/stdint.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/bits/stdint.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/sys/socket.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/bits/socket.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/byteswap.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/stdio.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/string.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/strings.h \
+ ../../../../../wireless/shared/mtlk_slid.h loggroups.h \
+ ../../../../../wireless/shared/mtlkbfield.h \
+ ../../../../../wireless/shared/mtlk_assert.h \
+ ../../../../../tools/shared/linux/../mtlk_osal.h \
+ ../../../../../wireless/shared/mtlkerr.h \
+ ../../../../../wireless/shared/memtags.h \
+ ../../../../../wireless/shared/mtlk_objpool.h \
+ ../../../../../tools/shared/linux/../memdefs.h \
+ ../../../../../wireless/shared/mem_leak.h \
+ ../../../../../tools/shared/linux/osal_osdep_decls.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/pthread.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/sched.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/time.h \
+ ../../../../../tools/shared/linux/mtlkidefs.h \
+ ../../../../../tools/shared/linux/osal_osdep_defs.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/unistd.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/bits/posix.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/errno.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/bits/errno.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/linux/if_ether.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/linux/types.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/asm/types.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/asm-generic/int-ll64.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/asm/bitsperlong.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/asm-generic/bitsperlong.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/linux/posix_types.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/linux/stddef.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/asm/posix_types.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/asm/sgidefs.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/asm-generic/posix_types.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/linux/libc-compat.h \
+ ../../../../../tools/shared/linux/../mtlk_osal_dbg.h \
+ ../../../../../tools/shared/linux/utils.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/sys/time.h \
+ /home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/sys/select.h \
+ ../../../../../tools/shared/linux/log_osdep.h \
+ ../../../../../tools/rtlogger/shared/log.h \
+ ../../../../../tools/rtlogger/shared/logdefs.h \
+ ../../../../../wireless/shared/mtlkbfield.h \
+ ../../../../../tools/shared/linux/mtlkpack.h \
+ ../../../../../tools/rtlogger/shared/formats.h \
+ ../../../../../tools/rtlogger/shared/logmacro_mixins.h logmacros.h \
+ ../../../../../wireless/shared/mtlkstartup.h \
+ ../../../../../tools/shared/linux/../mtlkcontainer.h \
+ ../../../../../tools/shared/linux/../mtlk_osal.h \
+ ../../../../../wireless/shared/mtlklist.h \
+ ../../../../../tools/shared/linux/mtlklist_osdep_decls.h \
+ ../../../../../tools/shared/linux/mtlklist_osdep_defs.h \
+ ../../../../../wireless/shared/mtlklist_dbg.h
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/stdc-predef.h:
+
+/home/jorge/wave300asGIT/wave300-openwrt/builds/ugw5.4-vrx288/config.h:
+
+/home/jorge/wave300asGIT/wave300-openwrt/builds/ugw5.4-vrx288/.config.h:
+
+../../../../../tools/shared/linux/mtlkinc.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/stdlib.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/features.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/sys/glibc-types.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/sys/cdefs.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/bits/alltypes.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/alloca.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/arpa/inet.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/netinet/in.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/inttypes.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/stdint.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/bits/stdint.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/sys/socket.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/bits/socket.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/byteswap.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/stdio.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/string.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/strings.h:
+
+../../../../../wireless/shared/mtlk_slid.h:
+
+loggroups.h:
+
+../../../../../wireless/shared/mtlkbfield.h:
+
+../../../../../wireless/shared/mtlk_assert.h:
+
+../../../../../tools/shared/linux/../mtlk_osal.h:
+
+../../../../../wireless/shared/mtlkerr.h:
+
+../../../../../wireless/shared/memtags.h:
+
+../../../../../wireless/shared/mtlk_objpool.h:
+
+../../../../../tools/shared/linux/../memdefs.h:
+
+../../../../../wireless/shared/mem_leak.h:
+
+../../../../../tools/shared/linux/osal_osdep_decls.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/pthread.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/sched.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/time.h:
+
+../../../../../tools/shared/linux/mtlkidefs.h:
+
+../../../../../tools/shared/linux/osal_osdep_defs.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/unistd.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/bits/posix.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/errno.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/bits/errno.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/linux/if_ether.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/linux/types.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/asm/types.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/asm-generic/int-ll64.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/asm/bitsperlong.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/asm-generic/bitsperlong.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/linux/posix_types.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/linux/stddef.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/asm/posix_types.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/asm/sgidefs.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/asm-generic/posix_types.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/linux/libc-compat.h:
+
+../../../../../tools/shared/linux/../mtlk_osal_dbg.h:
+
+../../../../../tools/shared/linux/utils.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/sys/time.h:
+
+/home/jorge/openwrt/staging_dir/toolchain-mips_24kc_gcc-7.4.0_musl/include/sys/select.h:
+
+../../../../../tools/shared/linux/log_osdep.h:
+
+../../../../../tools/rtlogger/shared/log.h:
+
+../../../../../tools/rtlogger/shared/logdefs.h:
+
+../../../../../wireless/shared/mtlkbfield.h:
+
+../../../../../tools/shared/linux/mtlkpack.h:
+
+../../../../../tools/rtlogger/shared/formats.h:
+
+../../../../../tools/rtlogger/shared/logmacro_mixins.h:
+
+logmacros.h:
+
+../../../../../wireless/shared/mtlkstartup.h:
+
+../../../../../tools/shared/linux/../mtlkcontainer.h:
+
+../../../../../tools/shared/linux/../mtlk_osal.h:
+
+../../../../../wireless/shared/mtlklist.h:
+
+../../../../../tools/shared/linux/mtlklist_osdep_decls.h:
+
+../../../../../tools/shared/linux/mtlklist_osdep_defs.h:
+
+../../../../../wireless/shared/mtlklist_dbg.h:
