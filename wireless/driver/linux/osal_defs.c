@@ -13,10 +13,14 @@
 #define LOG_LOCAL_GID   GID_OSAL
 #define LOG_LOCAL_FID   3
 
-static void
-__mtlk_osal_timer_clb (unsigned long data)
-{
-  mtlk_osal_timer_t *timer = (mtlk_osal_timer_t *)data;
+
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
+static void __mtlk_osal_timer_clb (unsigned long data) {
+  mtlk_osal_timer_t *timer = (mtlk_osal_timer_t *) data;
+#else
+static void __mtlk_osal_timer_clb (struct timer_list *data) {
+  mtlk_osal_timer_t *timer = from_timer(timer, data, os_timer);
+#endif
   uint32             msec  = 0;
 
   if (__LIKELY(!timer->stop)) {
@@ -40,6 +44,7 @@ __mtlk_osal_timer_clb (unsigned long data)
   }
 }
 
+
 BOOL __MTLK_IFUNC
 _mtlk_osal_timer_is_stopped (mtlk_osal_timer_t *timer)
 {
@@ -60,12 +65,20 @@ _mtlk_osal_timer_init (mtlk_osal_timer_t *timer,
   ASSERT(clb != NULL);
 
   memset(timer, 0, sizeof(*timer));
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
   init_timer(&timer->os_timer);
+#else
+  timer_setup(&timer->os_timer, __mtlk_osal_timer_clb, 0); /* the third argument may include TIMER_* flags */   // garlet
+#endif
+
   mtlk_rmlock_init(&timer->rmlock);
   mtlk_rmlock_acquire(&timer->rmlock); /* Acquire RM Lock initially */
-
-  timer->os_timer.data     = (unsigned long)timer;
+  
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
+  timer->os_timer.data     = (unsigned long) timer; // move this two lines inside the previus #if ?
   timer->os_timer.function = __mtlk_osal_timer_clb;
+#endif
+
   timer->clb               = clb;
   timer->clb_usr_data      = clb_usr_data;
   timer->stop              = TRUE;

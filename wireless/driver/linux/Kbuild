@@ -54,10 +54,43 @@ mtlk-objs := core.o core_ab.o core_pdb.o\
    $(driver_shared_builddir)/ta.o \
    $(driver_shared_builddir)/mtlk_bist.o \
    $(driver_shared_builddir)/mtlk_ps.o \
-   $(driver_shared_builddir)/fw_recovery.o
+   $(driver_shared_builddir)/fw_recovery.o \
+		 $(driver_rflib_shared_builddir)/mtlk_channels.o \
+		 $(driver_rflib_shared_builddir)/mtlk_eeprom.o \
+		 $(driver_rflib_shared_builddir)/eeprom_gpio.o \
+		 $(driver_rflib_shared_builddir)/eeprom_irbd.o \
+		 $(driver_rflib_shared_builddir)/cis_manager.o \
+		 $(driver_rflib_shared_builddir)/mtlk_dfs.o \
+		 $(driver_rflib_shared_builddir)/mtlk_aocs.o \
+		 $(driver_rflib_shared_builddir)/rdlim.o \
+		 $(driver_rflib_shared_builddir)/mtlk_tpcv4.o \
+		 $(driver_rflib_shared_builddir)/mtlk_scan.o \
+		 $(driver_rflib_shared_builddir)/mtlk_gpl_helper.o \
+		 $(driver_rflib_shared_builddir)/coex20_40.o \
+		 $(driver_rflib_shared_builddir)/coexlve.o \
+		 $(driver_rflib_shared_builddir)/cbsmgr.o \
+		 $(driver_rflib_shared_builddir)/scexempt.o \
+		 $(driver_rflib_shared_builddir)/coexfrgen.o \
+		 $(driver_rflib_shared_builddir)/mtlk_rfmgmt.o
+
+EXTRA_CFLAGS += -g \
+                -I$(abs_driver_rflib_shared_srcdir) \
+                -I$(abs_driver_rflib_linux_srcdir) \
+                -I$(abs_driver_shared_srcdir) \
+                -I$(abs_wireless_shared_srcdir) \
+                -I$(abs_fw_shared_srcdir) \
+                -I$(abs_tools_srcdir)/mtidl \
+                -I$(abs_rtlogger_shared_srcdir) \
+                -I$(abs_driver_shared_srcdir) \
+                -I$(abs_driver_linux_srcdir) \
+                -I$(abs_root_driver_shared_srcdir) \
+                -I$(abs_root_driver_linux_srcdir)
+
+# KBUILD_MODPOST_WARN = true # garlet: the previus lines add rflib, the correct should be just to add mtlk_rflib.a, but I did not figured out how to do it
+
+# mtlk-libs := $(driver_rflib_builddir)/mtlk_rflib.a
 
 
-mtlk-libs := $(driver_rflib_builddir)/mtlk_rflib.a
 
 EXTRA_CFLAGS += -I$(abs_driver_shared_srcdir)       \
                 -I$(abs_wireless_shared_srcdir)     \
